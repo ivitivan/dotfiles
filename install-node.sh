@@ -37,6 +37,7 @@ if [ ! -d /usr/local/man/man1 ] ; then
   mkdir /usr/local/man/man1
 fi
 cp ./share/man/man1/node.1 /usr/local/man/man1/
+rm ../node
 cp bin/node /usr/local/bin/
 rm ../npm
 ln -s "/usr/local/lib/node_modules/npm/bin/npm-cli.js" ../npm
