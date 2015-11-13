@@ -9,7 +9,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'https://github.com/altercation/vim-colors-solarized'
 Plugin 'https://github.com/mhumeSF/one-dark.vim'
-Plugin 'pangloss/vim-javascript'
+"Plugin 'pangloss/vim-javascript'
 Plugin 'https://github.com/ctrlpvim/ctrlp.vim'
 Plugin 'https://github.com/Valloric/YouCompleteMe'
 Plugin 'https://github.com/marijnh/tern_for_vim'
@@ -26,6 +26,13 @@ Plugin 'https://github.com/tpope/vim-fugitive'
 Plugin 'https://github.com/bling/vim-airline'
 Plugin 'https://github.com/Raimondi/delimitMate'
 Plugin 'https://github.com/tpope/vim-surround'
+Plugin 'https://github.com/vim-scripts/Vim-R-plugin'
+Plugin 'https://github.com/tpope/vim-abolish'
+Plugin 'https://github.com/severin-lemaignan/vim-minimap'
+Plugin 'chriskempson/base16-vim'
+Plugin 'https://github.com/twe4ked/vim-colorscheme-switcher'
+"Plugin 'https://github.com/jelera/vim-javascript-syntax'
+Plugin 'https://github.com/othree/yajs.vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -55,18 +62,21 @@ autocmd FileType javascript,css inoremap <silent> <Leader>; <c-o>:call cosco#com
 
 " Airline settings
 set laststatus=2
-
+let g:airline_powerline_fonts = 1
 
 " Make paste and copy work
 set clipboard+=unnamed
 set clipboard=unnamedplus
 
 " Define colorsheme and appearance
+"let base16colorspace="256"
 set t_Co=256
+set background=dark
+colorscheme base16-ocean
+let base16colorspace=256
+
 filetype plugin on
 syntax on
-set background=light
-colorscheme solarized
 set nu
 " to display background properly inside tmux
 set t_ut=
@@ -77,6 +87,12 @@ set t_ZR=[23m " enable italics
 highlight Comment cterm=italic
 " Show the current line and column numbers
 set ruler
+" VertSplit color
+"hi VertSplit ctermfg=7 ctermbg=7 gui=reverse
+" Minimap plugin highlight color
+let g:minimap_highlight='LineNr'
+" GUI
+set guifont=Ubuntu\ Mono\ 14
 
 " Tab settings
 set tabstop=2
