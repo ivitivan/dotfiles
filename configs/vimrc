@@ -9,7 +9,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'https://github.com/altercation/vim-colors-solarized'
 Plugin 'https://github.com/mhumeSF/one-dark.vim'
-"Plugin 'pangloss/vim-javascript'
+Plugin 'pangloss/vim-javascript'
 Plugin 'https://github.com/ctrlpvim/ctrlp.vim'
 Plugin 'https://github.com/Valloric/YouCompleteMe'
 Plugin 'https://github.com/marijnh/tern_for_vim'
@@ -32,7 +32,7 @@ Plugin 'https://github.com/severin-lemaignan/vim-minimap'
 Plugin 'chriskempson/base16-vim'
 Plugin 'https://github.com/twe4ked/vim-colorscheme-switcher'
 "Plugin 'https://github.com/jelera/vim-javascript-syntax'
-Plugin 'https://github.com/othree/yajs.vim'
+"Plugin 'https://github.com/othree/yajs.vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
