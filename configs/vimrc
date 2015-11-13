@@ -33,6 +33,8 @@ Plugin 'chriskempson/base16-vim'
 Plugin 'https://github.com/twe4ked/vim-colorscheme-switcher'
 "Plugin 'https://github.com/jelera/vim-javascript-syntax'
 "Plugin 'https://github.com/othree/yajs.vim'
+Plugin 'https://github.com/majutsushi/tagbar'
+Plugin 'https://github.com/mileszs/ack.vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -72,7 +74,7 @@ set clipboard=unnamedplus
 "let base16colorspace="256"
 set t_Co=256
 set background=dark
-colorscheme base16-ocean
+colorscheme base16-tomorrow
 let base16colorspace=256
 
 filetype plugin on
@@ -115,6 +117,10 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Key bindings
 " Open vimrc
 nmap <Leader>v :e ~/.vimrc<cr>
+execute "set <M-n>=\en"
+nnoremap <M-n> :bnext<CR>
+execute "set <M-p>=\ep"
+nnoremap <M-p> :bprevious<CR>
 
 " Autocmds
 " Apply settings after saving
