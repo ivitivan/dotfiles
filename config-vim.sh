@@ -1,2 +1,2 @@
 cp ./configs/vimrc ~/.vimrc
-vim +PluginInstall +qall
+vim +PluginClean +PluginInstall +qall
