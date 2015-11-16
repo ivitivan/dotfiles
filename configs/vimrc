@@ -37,7 +37,7 @@ Plugin 'https://github.com/majutsushi/tagbar'
 Plugin 'https://github.com/mileszs/ack.vim'
 Plugin 'https://github.com/rking/ag.vim'
 Plugin 'https://github.com/scrooloose/syntastic'
-Plugin 'https://github.com/scrooloose/nerdtree'
+"Plugin 'https://github.com/scrooloose/nerdtree'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -90,7 +90,6 @@ set t_Co=256
 set background=dark
 colorscheme base16-tomorrow
 let base16colorspace=256
-hi MatchParen ctermbg=9 term=bold ctermfg=none
 
 filetype plugin on
 syntax on
@@ -153,3 +152,6 @@ match OverLength /\%81v.\+/
 
 " scrolloff
 set scrolloff=5
+
+
+highlight MatchParen ctermbg=9 term=bold ctermfg=none
