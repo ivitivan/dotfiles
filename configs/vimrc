@@ -90,6 +90,7 @@ set t_Co=256
 set background=dark
 colorscheme base16-tomorrow
 let base16colorspace=256
+hi MatchParen ctermbg=9 term=bold ctermfg=none
 
 filetype plugin on
 syntax on
