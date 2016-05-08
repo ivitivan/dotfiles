@@ -23,7 +23,7 @@ Plugin 'https://github.com/mxw/vim-jsx'
 Plugin 'https://github.com/lfilho/cosco.vim'
 Plugin 'https://github.com/easymotion/vim-easymotion'
 Plugin 'https://github.com/tpope/vim-fugitive'
-Plugin 'https://github.com/bling/vim-airline'
+"Plugin 'https://github.com/bling/vim-airline'
 Plugin 'https://github.com/Raimondi/delimitMate'
 Plugin 'https://github.com/tpope/vim-surround'
 Plugin 'https://github.com/vim-scripts/Vim-R-plugin'
@@ -36,8 +36,17 @@ Plugin 'https://github.com/twe4ked/vim-colorscheme-switcher'
 Plugin 'https://github.com/majutsushi/tagbar'
 Plugin 'https://github.com/mileszs/ack.vim'
 Plugin 'https://github.com/rking/ag.vim'
-Plugin 'https://github.com/scrooloose/syntastic'
+"Plugin 'https://github.com/scrooloose/syntastic'
 "Plugin 'https://github.com/scrooloose/nerdtree'
+Plugin 'https://github.com/grassdog/tagman.vim'
+Plugin 'https://github.com/wavded/vim-stylus'
+Plugin 'https://github.com/Valloric/MatchTagAlways'
+Plugin 'https://github.com/vim-scripts/JavaScript-Indent'
+Plugin 'https://github.com/KabbAmine/vCoolor.vim'
+"Plugin 'vim-airline/vim-airline-themes'
+Plugin 'https://github.com/groenewege/vim-less'
+Plugin 'https://github.com/Yggdroot/indentLine'
+Plugin 'https://github.com/embear/vim-localvimrc'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -49,13 +58,14 @@ let g:UltiSnipsJumpForwardTrigger="<c-l>"
 
 " Ctrl p Settings
 if executable('ag')
-	" Use Ag over Grep
-	set grepprg=ag\ --nogroup\ --nocolor
-	" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-	let g:ctrlp_user_command = 'ag %s --nocolor -g ""'
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -s -l --nocolor -g ""'
 endif
 
 " YouCompleteMe Settings
+let g:ycm_add_preview_to_completeopt=0
 let g:ycm_autoclose_preview_window_after_completion=1
 
 " Vim-jsx Settings
@@ -66,19 +76,19 @@ autocmd FileType javascript,css nnoremap <silent> <Leader>; :call cosco#commaOrS
 autocmd FileType javascript,css inoremap <silent> <Leader>; <c-o>:call cosco#commaOrSemiColon()<CR>
 
 " Airline settings
-set laststatus=2
-let g:airline_powerline_fonts = 1
+"set laststatus=2
+"let g:airline_powerline_fonts = 1
 
 " Syntastic settings
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = ["jscs"]
+let g:syntastic_javascript_checkers = ["eslint"]
 
 " Make paste and copy work
 set clipboard+=unnamed
@@ -147,7 +157,7 @@ autocmd BufWritePost ~/.vimrc :so %
 nmap <Leader>s :silent !google-chrome 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
 
 " fucking 80 characters
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+highlight OverLength term=underline cterm=underline
 match OverLength /\%81v.\+/
 
 " scrolloff
@@ -155,3 +165,24 @@ set scrolloff=5
 
 
 highlight MatchParen ctermbg=9 term=bold ctermfg=none
+
+" copy filename to clipboard
+noremap <silent> <F4> :let @+=expand("%:p")<CR>
+
+set incsearch
+
+"if !exists('g:airline_symbols')
+  "let g:airline_symbols = {}
+"endif
+"let g:airline_symbols.space = "\ua0"
+
+nmap ,cs :let @+=expand("%")<CR>
+let g:localvimrc_ask=0
+
+"Open Gdiff in vertical mode
+set diffopt+=vertical
+
+" Show status line
+set laststatus=2
+" Show full name in statusline
+set statusline+=%F
