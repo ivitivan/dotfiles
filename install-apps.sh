@@ -26,3 +26,5 @@ sudo apt-get install xsel
 sudo apt-get install cmake
 
 sudo apt-get install ruby
+
+sudo apt-get install tmux
