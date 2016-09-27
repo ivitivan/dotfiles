@@ -14,7 +14,7 @@ Plug 'https://github.com/SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
 "Plug 'https://github.com/jiangmiao/auto-pairs'
-Plug 'https://github.com/terryma/vim-multiple-cursors'
+"Plug 'https://github.com/terryma/vim-multiple-cursors'
 Plug 'https://github.com/digitaltoad/vim-jade'
 Plug 'https://github.com/mxw/vim-jsx'
 Plug 'https://github.com/lfilho/cosco.vim'
@@ -33,7 +33,8 @@ Plug 'https://github.com/twe4ked/vim-colorscheme-switcher'
 Plug 'https://github.com/majutsushi/tagbar'
 Plug 'https://github.com/mileszs/ack.vim'
 Plug 'https://github.com/rking/ag.vim'
-Plug 'https://github.com/scrooloose/syntastic'
+"Plug 'https://github.com/scrooloose/syntastic'
+Plug 'https://github.com/neomake/neomake'
 "Plug 'https://github.com/scrooloose/nerdtree'
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
@@ -42,8 +43,10 @@ Plug 'https://github.com/vim-scripts/JavaScript-Indent'
 Plug 'https://github.com/KabbAmine/vCoolor.vim'
 "Plug 'vim-airline/vim-airline-themes'
 Plug 'https://github.com/groenewege/vim-less'
-Plug 'https://github.com/Yggdroot/indentLine'
+"Plug 'https://github.com/Yggdroot/indentLine'
 Plug 'https://github.com/embear/vim-localvimrc'
+Plug 'metakirby5/codi.vim'
+Plug 'https://github.com/tpope/vim-unimpaired'
 call plug#end()
 
 " UltiSnips settings
@@ -70,21 +73,6 @@ let g:jsx_ext_required = 0
 autocmd FileType javascript,css nnoremap <silent> <Leader>; :call cosco#commaOrSemiColon()<CR>
 autocmd FileType javascript,css inoremap <silent> <Leader>; <c-o>:call cosco#commaOrSemiColon()<CR>
 
-" Airline settings
-"set laststatus=2
-"let g:airline_powerline_fonts = 1
-
-" Syntastic settings
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = ["eslint"]
-
 " Make paste and copy work
 set clipboard+=unnamed
 set clipboard=unnamedplus
@@ -92,7 +80,7 @@ set clipboard=unnamedplus
 " Define colorsheme and appearance
 "let base16colorspace="256"
 set t_Co=256
-set background=dark
+set background=light
 colorscheme base16-ocean
 let base16colorspace=256
 
@@ -151,7 +139,7 @@ autocmd BufWritePost ~/.vimrc :so %
 " Search the word on the Internet under cursor
 nmap <Leader>s :silent !google-chrome 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
 
-" 80 characters
+" fucking 80 characters
 highlight OverLength term=underline cterm=underline
 match OverLength /\%81v.\+/
 
@@ -190,15 +178,48 @@ cmap w!! w !sudo tee > /dev/null %
 nnoremap <silent> \j :<C-u>call search('\%' . virtcol('.') . 'v\S', 'W')<CR>
 nnoremap <silent> \k :<C-u>call search('\%' . virtcol('.') . 'v\S', 'bW')<CR>
 
-" Syntastic settings
+nnoremap \t :belowright split <bar> execute 'terminal npm test' expand('%')<CR>
+nnoremap \l :belowright split <bar> execute 'terminal npm run lint-pr' expand('%')<CR>
+
+nnoremap \f :let currentFileName = expand('%') <bar> let @+ = currentFileName <bar> let @" = currentFileName <bar> let @* = currentFileName<CR><CR>
+
+nnoremap <M-j> :res -20<CR><C-w>ja<C-l>
+tnoremap <M-k> <C-\><C-n>:res -20<CR><C-w>k<C-l>
+nnoremap <M-k> :res -20<CR><C-w>k<C-l>
+tnoremap <Esc> <C-\><C-n>
+
+command! Term execute "rightbelow split | terminal"
+command! Terminal execute "rightbelow split | terminal"
+
+" Russian layot
+set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+
+" Linter Syntastic
 set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_loc_list_height = 5
+let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+let g:syntastic_check_on_wq = 1
+let g:syntastic_javascript_checkers = ['eslint']
 
-"nnoremap \t <C-z> echo Hello
-nnoremap \t :execute '!npm test' expand('%:p:h')<CR>
+let g:syntastic_error_symbol = '❌'
+let g:syntastic_style_error_symbol = '⁉️'
+let g:syntastic_warning_symbol = '⚠️'
+let g:syntastic_style_warning_symbol = '💩'
+
+highlight link SyntasticErrorSign SignColumn
+highlight link SyntasticWarningSign SignColumn
+highlight link SyntasticStyleErrorSign SignColumn
+highlight link SyntasticStyleWarningSign SignColumn
+
+autocmd! BufWritePost,BufEnter * Neomake
+
+" File Explorer
+let g:netrw_liststyle=3
+
+nnoremap \e :25Lexplore<CR>
+
