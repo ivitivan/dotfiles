@@ -27,7 +27,7 @@ Plug 'https://github.com/vim-scripts/Vim-R-plugin'
 Plug 'https://github.com/tpope/vim-abolish'
 Plug 'https://github.com/severin-lemaignan/vim-minimap'
 Plug 'chriskempson/base16-vim'
-Plug 'https://github.com/twe4ked/vim-colorscheme-switcher'
+"Plug 'https://github.com/twe4ked/vim-colorscheme-switcher'
 "Plug 'https://github.com/jelera/vim-javascript-syntax'
 "Plug 'https://github.com/othree/yajs.vim'
 Plug 'https://github.com/majutsushi/tagbar'
@@ -47,6 +47,10 @@ Plug 'https://github.com/groenewege/vim-less'
 Plug 'https://github.com/embear/vim-localvimrc'
 Plug 'metakirby5/codi.vim'
 Plug 'https://github.com/tpope/vim-unimpaired'
+Plug 'https://github.com/tpope/vim-vinegar'
+"Plug 'https://github.com/ap/vim-css-color'
+Plug 'https://github.com/chrisbra/Colorizer'
+Plug 'https://github.com/HerringtonDarkholme/yats.vim'
 call plug#end()
 
 " UltiSnips settings
@@ -79,10 +83,11 @@ set clipboard=unnamedplus
 
 " Define colorsheme and appearance
 "let base16colorspace="256"
+"let g:base16_shell_path="~/.config/base16-shell"
+let base16colorspace="256"
 set t_Co=256
-set background=light
-colorscheme base16-ocean
-let base16colorspace=256
+"set background=light
+colorscheme atelier-dune.light
 
 filetype plugin on
 syntax on
@@ -178,7 +183,7 @@ cmap w!! w !sudo tee > /dev/null %
 nnoremap <silent> \j :<C-u>call search('\%' . virtcol('.') . 'v\S', 'W')<CR>
 nnoremap <silent> \k :<C-u>call search('\%' . virtcol('.') . 'v\S', 'bW')<CR>
 
-nnoremap \t :belowright split <bar> execute 'terminal npm test' expand('%')<CR>
+nnoremap \t :belowright split <bar> execute 'terminal npm run test' expand('%')<CR>
 nnoremap \l :belowright split <bar> execute 'terminal npm run lint-pr' expand('%')<CR>
 
 nnoremap \f :let currentFileName = expand('%') <bar> let @+ = currentFileName <bar> let @" = currentFileName <bar> let @* = currentFileName<CR><CR>
@@ -223,3 +228,9 @@ let g:netrw_liststyle=3
 
 nnoremap \e :25Lexplore<CR>
 
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
+
+hi xmlEndTag ctermfg=4

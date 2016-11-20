@@ -1,0 +1,27 @@
+Xft.dpi: 140
+!Xft.autohint: 0
+!Xft.lcdfilter:  lcddefault
+!Xft.hintstyle:  hintfull
+!Xft.hinting: 1
+!Xft.antialias: 1
+!Xft.rgba: rgb
+
+rofi.font: Mono 24
+rofi.color-enabled: true
+
+! vim: filetype=yaml
+! rofi template
+! Base16 Atelier Dune Dark, by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/dune)
+
+! State:           'bg',    'fg',    'bgalt', 'hlbg',  'hlfg'
+rofi.color-normal: #e8e4cf, #20201d, #e8e4cf, #d73737, #20201d
+rofi.color-urgent: #20201d, #e8e4cf, #20201d, #d73737, #20201d
+rofi.color-active: #20201d, #e8e4cf, #20201d, #d73737, #20201d
+!                  'bg',    'border'
+rofi.color-window: #e8e4cf, #20201d
+
+rofi.hide-scrollbar: true
+
+URxvt*font: xft:Monospace:pixelsize=24
+URxvt*scrollBar: false
+URxvt*borderColor: #20201d
