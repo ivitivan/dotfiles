@@ -1,26 +1,30 @@
-sudo apt install git
-sudo apt install i3
-sudo apt install compton
-sudo apt install unclutter
-sudo apt install gimp
-sudo apt install steam
-sudo apt install ffmpeg
-sudo apt install vlc
-sudo apt-get install software-properties-common
-sudo apt-get install silversearcher-ag
-sudo apt-get install autojump
-sudo apt-get install tmux
+sudo apt -y install git
+sudo apt -y install i3
+sudo apt -y install compton
+sudo apt -y install unclutter
+sudo apt -y install gimp
+sudo apt -y install steam
+sudo apt -y install ffmpeg
+sudo apt -y install vlc
+sudo apt -y install software-properties-common
+sudo apt -y install silversearcher-ag
+sudo apt -y install autojump
+sudo apt -y install tmux
+sudo apt -y install feh
+sudo apt -y install xclip
+sudo apt -y install xbacklight
+sudo apt -y install alsa-utils pulseaudio
 
 
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt-get update
-sudo apt-get install neovim
+sudo apt-get -y install neovim
 
 sudo apt-get install python-dev python-pip python3-dev python3-pip
 sudo pip2 install --upgrade neovim
 
-sudo apt-get install build-essential cmake
-sudo apt-get install python-dev python3-dev
+sudo apt-get -y install build-essential cmake
+sudo apt-get -y install python-dev python3-dev
 
 curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -49,6 +53,9 @@ git config --global alias.dif diff
 git config --global credential.helper cache
 git config --global core.editor nvim
 
+git config --global user.email 'ivitivan@gmail.com'
+git config --global user.name 'Vitaly Ivanov'
+
 mkdir ~/.bash
 git clone git://github.com/jimeh/git-aware-prompt.git ~/.bash/git-aware-prompt
 
@@ -56,4 +63,13 @@ printf 'export GITAWAREPROMPT=~/.bash/git-aware-prompt\nsource "${GITAWAREPROMPT
 
 echo 'export PS1="\${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "' >> ~/.bashrc
 
+echo 'source ~/.config/base16-shell/theme.sh' >> ~/.bashrc
+
+mkdir ~/.config/gnome-terminal-theme/
+mkdir ~/.config/base16-shell/
+mkdir ~/.config/nvim/colors/
+
+base16-builder -s atelier-dune -t gnome-terminal -b dark > ~/.config/gnome-terminal-theme/theme.sh
+base16-builder -s atelier-dune -t vim -b dark > ~/.config/nvim/colors/base16-atelier-dune.vim
+base16-builder -s atelier-dune -t shell -b dark > ~/.config/base16-shell/theme.sh
 
