@@ -3,9 +3,6 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 call plug#begin('~/.config/nvim/plugins')
-Plug 'gmarik/Vundle.vim'
-Plug 'https://github.com/altercation/vim-colors-solarized'
-Plug 'https://github.com/mhumeSF/one-dark.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'https://github.com/ctrlpvim/ctrlp.vim'
 Plug 'https://github.com/Valloric/YouCompleteMe'
@@ -13,44 +10,32 @@ Plug 'https://github.com/marijnh/tern_for_vim'
 Plug 'https://github.com/SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
-"Plug 'https://github.com/jiangmiao/auto-pairs'
-"Plug 'https://github.com/terryma/vim-multiple-cursors'
-Plug 'https://github.com/digitaltoad/vim-jade'
 Plug 'https://github.com/mxw/vim-jsx'
-Plug 'https://github.com/lfilho/cosco.vim'
 Plug 'https://github.com/easymotion/vim-easymotion'
 Plug 'https://github.com/tpope/vim-fugitive'
-"Plug 'https://github.com/bling/vim-airline'
 Plug 'https://github.com/Raimondi/delimitMate'
 Plug 'https://github.com/tpope/vim-surround'
 Plug 'https://github.com/vim-scripts/Vim-R-plugin'
 Plug 'https://github.com/tpope/vim-abolish'
 Plug 'https://github.com/severin-lemaignan/vim-minimap'
-Plug 'chriskempson/base16-vim'
-"Plug 'https://github.com/twe4ked/vim-colorscheme-switcher'
-"Plug 'https://github.com/jelera/vim-javascript-syntax'
-"Plug 'https://github.com/othree/yajs.vim'
 Plug 'https://github.com/majutsushi/tagbar'
 Plug 'https://github.com/mileszs/ack.vim'
 Plug 'https://github.com/rking/ag.vim'
-"Plug 'https://github.com/scrooloose/syntastic'
 Plug 'https://github.com/neomake/neomake'
-"Plug 'https://github.com/scrooloose/nerdtree'
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
 Plug 'https://github.com/Valloric/MatchTagAlways'
 Plug 'https://github.com/vim-scripts/JavaScript-Indent'
 Plug 'https://github.com/KabbAmine/vCoolor.vim'
-"Plug 'vim-airline/vim-airline-themes'
 Plug 'https://github.com/groenewege/vim-less'
-"Plug 'https://github.com/Yggdroot/indentLine'
 Plug 'https://github.com/embear/vim-localvimrc'
 Plug 'metakirby5/codi.vim'
 Plug 'https://github.com/tpope/vim-unimpaired'
 Plug 'https://github.com/tpope/vim-vinegar'
-"Plug 'https://github.com/ap/vim-css-color'
 Plug 'https://github.com/chrisbra/Colorizer'
 Plug 'https://github.com/HerringtonDarkholme/yats.vim'
+Plug 'https://github.com/severin-lemaignan/vim-minimap'
+
 call plug#end()
 
 " UltiSnips settings
@@ -86,8 +71,8 @@ set clipboard=unnamedplus
 "let g:base16_shell_path="~/.config/base16-shell"
 let base16colorspace="256"
 set t_Co=256
-"set background=light
-colorscheme atelier-dune.light
+set background=dark
+colorscheme base16-atelier-dune
 
 filetype plugin on
 syntax on
@@ -199,30 +184,6 @@ command! Terminal execute "rightbelow split | terminal"
 " Russian layot
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
 
-" Linter Syntastic
-set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_loc_list_height = 5
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
-let g:syntastic_javascript_checkers = ['eslint']
-
-let g:syntastic_error_symbol = '❌'
-let g:syntastic_style_error_symbol = '⁉️'
-let g:syntastic_warning_symbol = '⚠️'
-let g:syntastic_style_warning_symbol = '💩'
-
-highlight link SyntasticErrorSign SignColumn
-highlight link SyntasticWarningSign SignColumn
-highlight link SyntasticStyleErrorSign SignColumn
-highlight link SyntasticStyleWarningSign SignColumn
-
-autocmd! BufWritePost,BufEnter * Neomake
-
 " File Explorer
 let g:netrw_liststyle=3
 
@@ -234,3 +195,9 @@ if filereadable(expand("~/.vimrc_background"))
 endif
 
 hi xmlEndTag ctermfg=4
+
+let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
+
+autocmd! BufWritePost,BufEnter * Neomake
+
