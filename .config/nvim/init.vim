@@ -71,8 +71,14 @@ set clipboard=unnamedplus
 "let g:base16_shell_path="~/.config/base16-shell"
 let base16colorspace="256"
 set t_Co=256
-set background=dark
-colorscheme base16-atelier-dune
+
+if $BACKGROUND == 'dark'
+  set background=dark
+  colorscheme base16-atelier-dune
+else
+  set background=light
+  colorscheme base16-atelier-dune.light
+endif
 
 filetype plugin on
 syntax on
@@ -97,7 +103,7 @@ set guifont=Ubuntu\ Mono\ 14
 set tabstop=2
 set shiftwidth=2
 set expandtab
-set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<
+set listchars=eol:~,tab:>>,trail:~,extends:>,precedes:<
 set list
 
 " Backspace
@@ -200,4 +206,22 @@ let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
 let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
 
 autocmd! BufWritePost,BufEnter * Neomake
+
+nnoremap <leader>sv :source $MYVIMRC<cr>
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+
+source ~/.config/nvim/abbreviations.vim
+
+augroup markdown
+  autocmd!
+  autocmd FileType markdown onoremap <buffer> ah :<c-u>execute "normal! ?^==\\+$\r:nohlsearch\rg_vk0"<cr>
+  autocmd FileType markdown onoremap <buffer> ih :<c-u>execute "normal! ?\(^==\\+$\\|^--\\+$\)\r:nohlsearch\rkvg_"<cr>
+augroup END
+
+augroup goto
+  autocmd!
+  autocmd FileType javascript.jsx nnoremap <buffer> <leader>gs :e %:r.sss<cr>
+  autocmd FileType javascript.jsx nnoremap <buffer> <leader>gc :e %:r.js<cr>
+  autocmd FileType javascript.jsx nnoremap <buffer> <leader>gt :e %:r.test.js<cr>
+augroup END
 
