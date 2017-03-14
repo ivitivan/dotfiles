@@ -52,6 +52,7 @@ git config --global alias.st status
 git config --global alias.dif diff
 git config --global credential.helper cache
 git config --global core.editor nvim
+git config --global branch.autoSetupMerge always
 
 git config --global user.email 'ivitivan@gmail.com'
 git config --global user.name 'Vitaly Ivanov'
