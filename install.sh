@@ -56,6 +56,7 @@ git config --global branch.autoSetupMerge always
 
 git config --global user.email 'ivitivan@gmail.com'
 git config --global user.name 'Vitaly Ivanov'
+git config --global core.excludesfile ~/.gitignore_global
 
 mkdir ~/.bash
 git clone git://github.com/jimeh/git-aware-prompt.git ~/.bash/git-aware-prompt
