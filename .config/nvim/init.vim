@@ -186,7 +186,7 @@ set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLM
 " File Explorer
 let g:netrw_liststyle=3
 
-nnoremap <leader>e <c-z>ranger
+nnoremap <leader>e :term ranger<cr>
 
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
@@ -206,7 +206,7 @@ augroup sourceVimrc
   autocmd!
   autocmd BufWritePost ~/.config/nvim/init.vim :source $MYVIMRC
 augroup END
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>v :vsplit $MYVIMRC<cr>
 
 source ~/.config/nvim/abbreviations.vim
 
@@ -223,4 +223,11 @@ augroup goto
   autocmd FileType javascript.jsx nnoremap <buffer> <leader>gt :e %:r.test.js<cr>
 augroup END
 
+let maplocalleader = "\\"
+augroup runJava
+  autocmd!
+  autocmd FileType java :silent !make setcurrent %
+  autocmd FileType java nnoremap <localleader>r :rightbelow split <bar> terminal make run<cr>
+augroup END
 
+let $CLASSPATH='.:./stdlib:./exercises/*:./programs/*'
