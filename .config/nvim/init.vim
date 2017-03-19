@@ -82,7 +82,7 @@ endif
 
 filetype plugin on
 syntax on
-set nu
+set number
 " to display background properly inside tmux
 set t_ut=
 " Start and end characters for comments
@@ -124,13 +124,6 @@ nmap <Leader>v :e ~/.vimrc<cr>
 nnoremap <M-n> :bnext<CR>
 " execute "set <M-p>=\ep"
 nnoremap <M-p> :bprevious<CR>
-
-" Autocmds
-" Apply settings after saving
-autocmd BufWritePost ~/.vimrc :so %
-
-" Silent
-"command! -nargs=1 Silent | execute ':silent !'.<q-args> | execute ':redraw!'
 
 " Search the word on the Internet under cursor
 nmap <Leader>s :silent !google-chrome 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
@@ -193,7 +186,7 @@ set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLM
 " File Explorer
 let g:netrw_liststyle=3
 
-nnoremap \e :25Lexplore<CR>
+nnoremap <leader>e <c-z>ranger
 
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
@@ -208,6 +201,11 @@ let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
 autocmd! BufWritePost,BufEnter * Neomake
 
 nnoremap <leader>sv :source $MYVIMRC<cr>
+
+augroup sourceVimrc
+  autocmd!
+  autocmd BufWritePost ~/.config/nvim/init.vim :source $MYVIMRC
+augroup END
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 
 source ~/.config/nvim/abbreviations.vim
@@ -224,4 +222,5 @@ augroup goto
   autocmd FileType javascript.jsx nnoremap <buffer> <leader>gc :e %:r.js<cr>
   autocmd FileType javascript.jsx nnoremap <buffer> <leader>gt :e %:r.test.js<cr>
 augroup END
+
 
