@@ -24,7 +24,6 @@ Plug 'https://github.com/rking/ag.vim'
 Plug 'https://github.com/neomake/neomake'
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
-Plug 'https://github.com/Valloric/MatchTagAlways'
 Plug 'https://github.com/vim-scripts/JavaScript-Indent'
 Plug 'https://github.com/KabbAmine/vCoolor.vim'
 Plug 'https://github.com/groenewege/vim-less'
@@ -35,12 +34,14 @@ Plug 'https://github.com/tpope/vim-vinegar'
 Plug 'https://github.com/chrisbra/Colorizer'
 Plug 'https://github.com/HerringtonDarkholme/yats.vim'
 Plug 'https://github.com/severin-lemaignan/vim-minimap'
+Plug 'https://github.com/hail2u/vim-css3-syntax'
 
 call plug#end()
 
 " UltiSnips settings
 let g:UltiSnipsExpandTrigger="<c-l>"
 let g:UltiSnipsJumpForwardTrigger="<c-l>"
+let g:UltiSnipsSnippetsDir="~/.config/nvim/UltiSnips"
 "let g:UltiSnipsJumpBackwardTrigger="<c-h>"
 
 " Ctrl p Settings
@@ -50,6 +51,7 @@ if executable('ag')
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag %s -s -l --nocolor -g ""'
 endif
+let g:ctrlp_use_caching = 0
 
 " YouCompleteMe Settings
 let g:ycm_add_preview_to_completeopt=0
@@ -128,13 +130,16 @@ nnoremap <M-p> :bprevious<CR>
 " Search the word on the Internet under cursor
 nmap <Leader>s :silent !google-chrome 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
 
-" fucking 80 characters
+" 80 characters
 highlight OverLength term=underline cterm=underline
-match OverLength /\%81v.\+/
+augroup highlight80
+  autocmd!
+  autocmd FileType * match none
+  autocmd FileType javascript.jsx match OverLength /\%81v.\+/
+augroup END
 
 " scrolloff
 set scrolloff=5
-
 
 highlight MatchParen ctermbg=9 term=bold ctermfg=none
 
@@ -167,7 +172,7 @@ cmap w!! w !sudo tee > /dev/null %
 nnoremap <silent> \j :<C-u>call search('\%' . virtcol('.') . 'v\S', 'W')<CR>
 nnoremap <silent> \k :<C-u>call search('\%' . virtcol('.') . 'v\S', 'bW')<CR>
 
-nnoremap \t :belowright split <bar> execute 'terminal npm run test' expand('%')<CR>
+"nnoremap \t :belowright split <bar> execute 'terminal npm run test' expand('%')<CR>
 nnoremap \l :belowright split <bar> execute 'terminal npm run lint-pr' expand('%')<CR>
 
 nnoremap \f :let currentFileName = expand('%') <bar> let @+ = currentFileName <bar> let @" = currentFileName <bar> let @* = currentFileName<CR><CR>
@@ -179,6 +184,7 @@ tnoremap <Esc> <C-\><C-n>
 
 command! Term execute "rightbelow split | terminal"
 command! Terminal execute "rightbelow split | terminal"
+nnoremap <leader>t :belowright split <bar> terminal<CR>
 
 " Russian layot
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
@@ -187,6 +193,7 @@ set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLM
 let g:netrw_liststyle=3
 
 nnoremap <leader>e :term ranger<cr>
+
 
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
@@ -218,7 +225,7 @@ augroup END
 
 augroup goto
   autocmd!
-  autocmd FileType javascript.jsx nnoremap <buffer> <leader>gs :e %:r.sss<cr>
+  autocmd FileType javascript.jsx nnoremap <buffer> <leader>gs :e %:r.css<cr>
   autocmd FileType javascript.jsx nnoremap <buffer> <leader>gc :e %:r.js<cr>
   autocmd FileType javascript.jsx nnoremap <buffer> <leader>gt :e %:r.test.js<cr>
 augroup END
@@ -231,3 +238,8 @@ augroup runJava
 augroup END
 
 let $CLASSPATH='.:./stdlib:./exercises/*:./programs/*'
+nnoremap <leader>n :nohl<cr>
+set mouse=a
+
+nnoremap <leader>a :e %:h/
+nnoremap <leader>r :%s/<c-r><c-w>//g<left><left>
