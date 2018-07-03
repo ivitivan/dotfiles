@@ -129,7 +129,7 @@ set guifont=Ubuntu\ Mono\ 14
 set tabstop=2
 set shiftwidth=2
 set expandtab
-set listchars=eol:~,tab:>>,trail:~,extends:>,precedes:<
+set listchars=eol:⏎,tab:>>,trail:~,extends:>,precedes:<
 set list
 
 " Backspace
