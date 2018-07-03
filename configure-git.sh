@@ -12,3 +12,4 @@ git config --global user.name 'Vitaly Ivanov'
 git config --global core.excludesfile ~/.gitignore_global
 
 git config --global push.default current
+git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
