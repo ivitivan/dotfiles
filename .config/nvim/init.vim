@@ -21,7 +21,7 @@ Plug 'https://github.com/tpope/vim-abolish'
 Plug 'https://github.com/severin-lemaignan/vim-minimap'
 Plug 'https://github.com/majutsushi/tagbar'
 Plug 'https://github.com/mileszs/ack.vim'
-Plug 'https://github.com/rking/ag.vim'
+Plug 'https://github.com/mileszs/ack.vim'
 Plug 'https://github.com/neomake/neomake'
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
@@ -48,6 +48,8 @@ Plug 'https://github.com/vim-scripts/ReplaceWithRegister'
 Plug 'https://github.com/yuttie/comfortable-motion.vim'
 Plug 'https://github.com/moll/vim-node'
 Plug 'https://github.com/lfilho/cosco.vim'
+Plug 'https://github.com/majutsushi/tagbar'
+Plug 'https://github.com/ludovicchabant/vim-gutentags'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -395,3 +397,14 @@ let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 set path=.,src,node_modules
 set suffixesadd=.js,.jsx
 runtime macros/sandwich/keymap/surround.vim
+
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+
+cnoreabbrev ag Ack
+cnoreabbrev aG Ack
+cnoreabbrev Ag Ack
+cnoreabbrev AG Ack
+
+nnoremap <leader>. :CtrlPTag<cr>
