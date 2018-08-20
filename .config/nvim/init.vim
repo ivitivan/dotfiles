@@ -11,10 +11,8 @@ Plug 'https://github.com/SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
 Plug 'https://github.com/mxw/vim-jsx'
-Plug 'https://github.com/easymotion/vim-easymotion'
 Plug 'https://github.com/tpope/vim-fugitive'
 Plug 'https://github.com/Raimondi/delimitMate'
-" Plug 'https://github.com/tpope/vim-surround'
 Plug 'https://github.com/machakann/vim-sandwich'
 Plug 'https://github.com/vim-scripts/Vim-R-plugin'
 Plug 'https://github.com/tpope/vim-abolish'
@@ -48,8 +46,8 @@ Plug 'https://github.com/vim-scripts/ReplaceWithRegister'
 Plug 'https://github.com/yuttie/comfortable-motion.vim'
 Plug 'https://github.com/moll/vim-node'
 Plug 'https://github.com/lfilho/cosco.vim'
+Plug 'https://gitlab.com/Jrahme/smart-mark.git'
 Plug 'https://github.com/majutsushi/tagbar'
-Plug 'https://github.com/ludovicchabant/vim-gutentags'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -129,6 +127,7 @@ set guifont=Ubuntu\ Mono\ 14
 
 " Tab settings
 set tabstop=2
+set softtabstop=2
 set shiftwidth=2
 set expandtab
 set listchars=eol:⏎,tab:>>,trail:~,extends:>,precedes:<
@@ -199,7 +198,7 @@ nnoremap <silent> \j :<C-u>call search('\%' . virtcol('.') . 'v\S', 'W')<CR>
 nnoremap <silent> \k :<C-u>call search('\%' . virtcol('.') . 'v\S', 'bW')<CR>
 
 "nnoremap \t :belowright split <bar> execute 'terminal npm run test' expand('%')<CR>
-nnoremap \l :belowright split <bar> execute 'terminal npm run lint-pr' expand('%')<CR>
+" nnoremap \l :belowright split <bar> execute 'terminal npm run lint-pr' expand('%')<CR>
 
 nnoremap \f :let currentFileName = expand('%') <bar> let @+ = currentFileName <bar> let @" = currentFileName <bar> let @* = currentFileName<CR><CR>
 
@@ -225,7 +224,8 @@ endif
 
 hi xmlEndTag ctermfg=4
 
-let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+autocmd FileType javascript,javascript.jsx let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+autocmd FileType typescript,typescriptreact let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
 let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
 
 autocmd! BufWritePost,BufEnter * Neomake
@@ -338,8 +338,14 @@ let g:deoplete#sources#ternjs#filetypes = [
 let g:tern#command = ["tern"]
 let g:tern#arguments = ["--persistent"]
 
-inoremap <silent><expr> <Tab>
-    \ pumvisible() ? "\<C-n>" : deoplete#manual_complete()
+inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ deoplete#mappings#manual_complete()
+function! s:check_back_space() abort "{{{
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction"}}}
 
 set statusline+=,\ col:\ %c
 
@@ -385,8 +391,8 @@ nmap <Leader>vo :vs %:h/index.story.jsx<cr>
     "au TermClose * silent call OnTermClose()
 "augroup END
 
-nnoremap <leader>e :term ranger<cr>a
-"nnoremap <leader>e :TermTest("ranger")<cr>a
+nnoremap <leader>e :term ranger<cr>:set filetype=ranger<cr>a
+nnoremap <leader>E :execute 'term ranger '.expand("%:h")<cr>a
 
 inoremap <c-t> <esc>vBs<<esc>pa></<esc>pa><esc>F<i
 let g:NERDSpaceDelims = 1
@@ -395,16 +401,35 @@ hi HighlightedyankRegion cterm=reverse gui=reverse
 
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 set path=.,src,node_modules
-set suffixesadd=.js,.jsx
+set suffixesadd=.js,.jsx,.ts,tsx
 runtime macros/sandwich/keymap/surround.vim
 
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
+function! g:Eslint() abort
+  let current_file = expand("%")
+  execute '!npx eslint --fix '.current_file
+endfunction
+
+function! g:Tslint() abort
+  let current_file = expand("%")
+  execute '!npx tslint --fix '.current_file
+endfunction
+
+autocmd FileType javascript.jsx,javascript nnoremap <leader>l :call Eslint()<cr>:e<cr><cr>
+autocmd FileType typescriptreact,typescript nnoremap <leader>l :call Tslint()<cr>:e<cr><cr>
+
+set splitright
+
+" autocmd TermClose * if &filetype == "ranger" | bd! #
+
+nnoremap <leader>rct :belowright split <bar> execute 'term yarn test --testPathPattern=' . expand('%')<cr>a
+nnoremap <leader>rt :belowright split <bar> term yarn test<cr>a
+nnoremap <leader>rce :execute 'term yarn test-e2e --testPathPattern=' . expand('%')<cr>a
 
 cnoreabbrev ag Ack
 cnoreabbrev aG Ack
 cnoreabbrev Ag Ack
 cnoreabbrev AG Ack
 
-nnoremap <leader>. :CtrlPTag<cr>
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
