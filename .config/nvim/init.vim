@@ -4,6 +4,7 @@ filetype off                  " required
 
 call plug#begin('~/.config/nvim/plugins')
 Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
 Plug 'https://github.com/ctrlpvim/ctrlp.vim'
 "Plug 'https://github.com/Valloric/YouCompleteMe'
 Plug 'https://github.com/marijnh/tern_for_vim'
@@ -11,6 +12,7 @@ Plug 'https://github.com/SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
 Plug 'https://github.com/mxw/vim-jsx'
+" Plug 'https://github.com/peitalin/vim-jsx-typescript'
 Plug 'https://github.com/tpope/vim-fugitive'
 Plug 'https://github.com/Raimondi/delimitMate'
 Plug 'https://github.com/machakann/vim-sandwich'
@@ -26,7 +28,7 @@ Plug 'https://github.com/wavded/vim-stylus'
 Plug 'https://github.com/vim-scripts/JavaScript-Indent'
 Plug 'https://github.com/KabbAmine/vCoolor.vim'
 Plug 'https://github.com/groenewege/vim-less'
-Plug 'https://github.com/embear/vim-localvimrc'
+" Plug 'https://github.com/embear/vim-localvimrc'
 Plug 'metakirby5/codi.vim'
 Plug 'https://github.com/tpope/vim-unimpaired'
 Plug 'https://github.com/tpope/vim-vinegar'
@@ -46,8 +48,12 @@ Plug 'https://github.com/vim-scripts/ReplaceWithRegister'
 Plug 'https://github.com/yuttie/comfortable-motion.vim'
 Plug 'https://github.com/moll/vim-node'
 Plug 'https://github.com/lfilho/cosco.vim'
-Plug 'https://gitlab.com/Jrahme/smart-mark.git'
-Plug 'https://github.com/majutsushi/tagbar'
+" Plug 'https://gitlab.com/Jrahme/smart-mark.git'
+Plug 'https://github.com/neovimhaskell/haskell-vim'
+Plug 'https://github.com/qpkorr/vim-bufkill'
+" Plug 'https://github.com/aanari/vim-tsx-pretty'
+" Plug 'https://github.com/leafgarland/typescript-vim'
+" Plug 'https://github.com/Quramy/tsuquyomi'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -76,6 +82,7 @@ if executable('ag')
   let g:ctrlp_user_command = 'ag %s -s -l --nocolor -g ""'
 endif
 let g:ctrlp_use_caching = 0
+let g:ctrlp_match_current_file = 1
 
 " YouCompleteMe Settings
 let g:ycm_add_preview_to_completeopt=0
@@ -145,15 +152,15 @@ set undofile
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " Key bindings
-" Open vimrc
-nmap <Leader>v :e ~/.vimrc<cr>
 " execute "set <M-n>=\en"
 nnoremap <M-n> :bnext<CR>
 " execute "set <M-p>=\ep"
 nnoremap <M-p> :bprevious<CR>
 
 " Search the word on the Internet under cursor
-nmap <Leader>s :silent !google-chrome 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
+" nmap <Leader>s :silent !google-chrome-stable 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
+
+nmap <leader>s yiw:Ack <c-r>"<cr>
 
 " 80 characters
 highlight OverLength term=underline cterm=underline
@@ -194,20 +201,31 @@ let g:netrw_banner=0
 
 cmap w!! w !sudo tee > /dev/null %
 
-nnoremap <silent> \j :<C-u>call search('\%' . virtcol('.') . 'v\S', 'W')<CR>
-nnoremap <silent> \k :<C-u>call search('\%' . virtcol('.') . 'v\S', 'bW')<CR>
+" Find next symbol in this column
+nnoremap <silent> <leader>j :<C-u>call search('\%' . virtcol('.') . 'v\S', 'W')<CR>
+nnoremap <silent> <leader>k :<C-u>call search('\%' . virtcol('.') . 'v\S', 'bW')<CR>
 
-"nnoremap \t :belowright split <bar> execute 'terminal npm run test' expand('%')<CR>
-" nnoremap \l :belowright split <bar> execute 'terminal npm run lint-pr' expand('%')<CR>
 
-nnoremap \f :let currentFileName = expand('%') <bar> let @+ = currentFileName <bar> let @" = currentFileName <bar> let @* = currentFileName<CR><CR>
+function! g:Copy(text) abort
+  let @+ = a:text
+  let @" = a:text
+  let @* = a:text
+endfunction
+
+
+function! g:GetCurrentFileName() abort
+  return expand('%')
+endfunction
+
+" Copy current file name
+nnoremap <leader>f :let currentFileName = expand('%') <bar> call Copy(currentFileName)<cr>
 
 nnoremap <M-j> :res -20<CR><C-w>ja<C-l>
 tnoremap <M-k> <C-\><C-n>:res -20<CR><C-w>k<C-l>
 nnoremap <M-k> :res -20<CR><C-w>k<C-l>
 tnoremap <Esc> <C-\><C-n>
 
-nnoremap <leader>t :belowright split <bar> terminal<CR>a
+nnoremap <leader>t :botright split <bar> terminal<CR>:set filetype=terminal<cr>a
 
 " Russian layot
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
@@ -225,8 +243,12 @@ endif
 hi xmlEndTag ctermfg=4
 
 autocmd FileType javascript,javascript.jsx let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-autocmd FileType typescript,typescriptreact let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
+autocmd FileType typescript,typescriptreact,typescript.tsx let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
+
 let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
+
+let g:neomake_typescript_tsc_maker = {
+    \ 'args': ['--module', 'system', '--target', 'ES5', '--experimentalDecorators', '--noEmit'] }
 
 autocmd! BufWritePost,BufEnter * Neomake
 
@@ -236,7 +258,7 @@ augroup sourceVimrc
   autocmd!
   autocmd BufWritePost ~/.config/nvim/init.vim :source $MYVIMRC
 augroup END
-nnoremap <leader>v :vsplit $MYVIMRC<cr>
+nnoremap <leader>ve :vsplit $MYVIMRC<cr>
 
 source ~/.config/nvim/abbreviations.vim
 
@@ -271,7 +293,7 @@ function! g:Open_term_in_cur_dir() abort
   let currdir = getcwd()
   let netrwdir = expand("%:h")
   execute 'lcd '.netrwdir
-  execute 'belowright split'
+  execute 'botright split'
   execute 'terminal'
   execute 'normal a'
   execute 'lcd '.currdir
@@ -349,50 +371,9 @@ endfunction"}}}
 
 set statusline+=,\ col:\ %c
 
-nmap <Leader>E :e %:h/
-nmap <Leader>os :e %:h/styles.js<cr>
-nmap <Leader>ot :e %:h/index.spec.jsx<cr>
-nmap <Leader>oi :e %:h/index.jsx<cr>
-nmap <Leader>oo :e %:h/index.story.jsx<cr>
-
-nmap <Leader>vs :vs %:h/styles.js<cr>
-nmap <Leader>vt :vs %:h/index.spec.jsx<cr>
-nmap <Leader>vi :vs %:h/index.jsx<cr>
-nmap <Leader>vo :vs %:h/index.story.jsx<cr>
-
-"fun! TermTest(cmd)
-    "call termopen(a:cmd, {'on_exit': 's:OnExit'})
-"endfun
-
-"fun! s:OnExit(job_id, code, event) dict
-    "if a:code == 0
-        "close
-    "endif
-"endfun
-
-"nnoremap <leader>W :call TermTest()<CR>
-
-"function! OnTermClose()
-    "" Try to move the cursor to the last line containing text
-    "try
-        "$;?.
-    "catch
-        "" The buffer is empty here. This shouldn't ever happen
-        "return
-    "endtry
-    "" Is the last line an error message?
-    "if match(getline('.'), 'make: \*\*\* \[[^\]]\+] Error ') == -1
-        "call feedkeys('a ')
-    "endif
-"endfunction
-
-"augroup MY_TERM_AUGROUP
-    "autocmd!
-    "au TermClose * silent call OnTermClose()
-"augroup END
-
-nnoremap <leader>e :term ranger<cr>:set filetype=ranger<cr>a
-nnoremap <leader>E :execute 'term ranger '.expand("%:h")<cr>a
+nnoremap <leader>d :topleft split <bar> term ranger<cr>a
+nnoremap <leader>D :topleft split <bar> execute 'term ranger '.expand("%:h")<cr>a
+autocmd TermClose *:ranger,*:/bin/zsh bd!
 
 inoremap <c-t> <esc>vBs<<esc>pa></<esc>pa><esc>F<i
 let g:NERDSpaceDelims = 1
@@ -401,7 +382,8 @@ hi HighlightedyankRegion cterm=reverse gui=reverse
 
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 set path=.,src,node_modules
-set suffixesadd=.js,.jsx,.ts,tsx
+set suffixesadd=.js,.jsx,.tsx
+
 runtime macros/sandwich/keymap/surround.vim
 
 function! g:Eslint() abort
@@ -415,15 +397,18 @@ function! g:Tslint() abort
 endfunction
 
 autocmd FileType javascript.jsx,javascript nnoremap <leader>l :call Eslint()<cr>:e<cr><cr>
-autocmd FileType typescriptreact,typescript nnoremap <leader>l :call Tslint()<cr>:e<cr><cr>
+autocmd FileType typescriptreact,typescript,typescript.tsx nnoremap <leader>l :call Tslint()<cr>:e<cr><cr>
+
+" autocmd BufWritePost *.js,*.jsx call Eslint()
 
 set splitright
 
-" autocmd TermClose * if &filetype == "ranger" | bd! #
-
-nnoremap <leader>rct :belowright split <bar> execute 'term yarn test --testPathPattern=' . expand('%')<cr>a
-nnoremap <leader>rt :belowright split <bar> term yarn test<cr>a
-nnoremap <leader>rce :execute 'term yarn test-e2e --testPathPattern=' . expand('%')<cr>a
+autocmd BufRead,BufNewFile,BufEnter *.js,*.jsx,*.ts,*.tsx nnoremap <leader>rct :botright split <bar> execute 'term yarn test --testPathPattern=' . expand('%')<cr>a
+autocmd BufRead,BufNewFile,BufEnter *.js,*.jsx,*.ts,*.tsx nnoremap <leader>uct :botright split <bar> execute 'term yarn test -u --testPathPattern=' . expand('%')<cr>a
+autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rct :botright split <bar> execute 'term yarn test-e2e --runInBand --testPathPattern=' . expand('%')<cr>a
+autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rch :botright split <bar> execute 'term yarn test-e2e-headful --runInBand --testPathPattern=' . expand('%')<cr>a
+nnoremap <leader>rt :botright split <bar> term yarn test<cr>a
+nnoremap <leader>re :botright split <bar> term yarn test-e2e --runInBand --bail<cr>a
 
 cnoreabbrev ag Ack
 cnoreabbrev aG Ack
@@ -433,3 +418,81 @@ cnoreabbrev AG Ack
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
+
+autocmd FileWritePost javascript,javascript.jsx :call Eslint()<cr>:e<cr><cr>
+
+
+" autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+set completeopt-=preview
+" tnoremap <c-d> <c-\><c-n>:bd!<cr>
+
+" Use project's .vimrc
+set exrc
+set secure
+
+" vim-javascript settings
+set conceallevel=0
+let g:javascript_conceal_function             = "ƒ"
+let g:javascript_conceal_null                 = "ø"
+let g:javascript_conceal_this                 = "@"
+let g:javascript_conceal_return               = "⇚"
+let g:javascript_conceal_undefined            = "¿"
+let g:javascript_conceal_NaN                  = "ℕ"
+let g:javascript_conceal_prototype            = "¶"
+let g:javascript_conceal_static               = "•"
+let g:javascript_conceal_super                = "Ω"
+let g:javascript_conceal_arrow_function       = "⇒"
+let g:javascript_conceal_noarg_arrow_function = "🞅"
+let g:javascript_conceal_underscore_arrow_function = "🞅"
+
+" typescript.tsx
+highlight tsxCloseString ctermfg=4
+highlight htmlTag ctermfg=4
+highlight htmlTagName ctermfg=4
+
+nnoremap <leader>e :e %:h/
+nnoremap <leader>v :vs %:h/
+nnoremap <leader>vs :vs %:h/
+
+" Scrollbar
+" func! STL()
+"   let stl = '%f [%{(&fenc==""?&enc:&fenc).((exists("+bomb") && &bomb)?",B":"")}%M%R%H%W] %y [%l/%L,%v] [%p%%]'
+"   let barWidth = &columns - 65 " <-- wild guess
+"   let barWidth = barWidth < 3 ? 3 : barWidth
+
+"   if line('$') > 1
+"     let progress = (line('.')-1) * (barWidth-1) / (line('$')-1)
+"   else
+"     let progress = barWidth/2
+"   endif
+
+"   " line + vcol + %
+"   let pad = strlen(line('$'))-strlen(line('.')) + 3 - strlen(virtcol('.')) + 3 - strlen(line('.')*100/line('$'))
+"   let bar = repeat(' ',pad).' [%1*%'.barWidth.'.'.barWidth.'('
+"         \.repeat('-',progress )
+"         \.'%2*0%1*'
+"         \.repeat('-',barWidth - progress - 1).'%0*%)%<]'
+
+"   return stl.bar
+" endfun
+
+" hi def link User1 DiffAdd
+" hi def link User2 DiffDelete
+" set stl=%!STL()
+
+set laststatus=2
+
+" au BufRead *.html set filetype=htmlm4
+
+function! g:OpenInGitlab() abort
+  let ln = "https://git.itv.restr.im/ITV.RT/b2b/hotel-tv-manager/blob/master/" . GetCurrentFileName() . "\\#L" . line(".")
+
+  execute "!google-chrome-stable " . ln
+
+endfunction
+
+nnoremap <leader>g :call OpenInGitlab()<cr>
+
+" nnoremap <leader>gf *ggnf'lgf
+let @m = "*ggnf'lgfn"
+nnoremap <leader>gf @m
