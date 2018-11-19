@@ -4,7 +4,7 @@ filetype off                  " required
 
 call plug#begin('~/.config/nvim/plugins')
 Plug 'pangloss/vim-javascript'
-Plug 'leafgarland/typescript-vim'
+" Plug 'leafgarland/typescript-vim'
 Plug 'https://github.com/ctrlpvim/ctrlp.vim'
 "Plug 'https://github.com/Valloric/YouCompleteMe'
 Plug 'https://github.com/marijnh/tern_for_vim'
@@ -12,7 +12,7 @@ Plug 'https://github.com/SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
 Plug 'https://github.com/mxw/vim-jsx'
-" Plug 'https://github.com/peitalin/vim-jsx-typescript'
+Plug 'https://github.com/peitalin/vim-jsx-typescript'
 Plug 'https://github.com/tpope/vim-fugitive'
 Plug 'https://github.com/Raimondi/delimitMate'
 Plug 'https://github.com/machakann/vim-sandwich'
@@ -248,7 +248,7 @@ autocmd FileType typescript,typescriptreact,typescript.tsx let g:neomake_typescr
 let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
 
 let g:neomake_typescript_tsc_maker = {
-    \ 'args': ['--module', 'system', '--target', 'ES5', '--experimentalDecorators', '--noEmit'] }
+    \ 'args': ['--module', 'system', '--target', 'ES5', '--experimentalDecorators', '--noEmit', '--jsx'] }
 
 autocmd! BufWritePost,BufEnter * Neomake
 
@@ -393,7 +393,7 @@ endfunction
 
 function! g:Tslint() abort
   let current_file = expand("%")
-  execute '!npx tslint --fix '.current_file
+  execute '!npx tslint --fix --jsx '.current_file
 endfunction
 
 autocmd FileType javascript.jsx,javascript nnoremap <leader>l :call Eslint()<cr>:e<cr><cr>
@@ -496,3 +496,16 @@ nnoremap <leader>g :call OpenInGitlab()<cr>
 " nnoremap <leader>gf *ggnf'lgf
 let @m = "*ggnf'lgfn"
 nnoremap <leader>gf @m
+
+" vmap "+y :!xclip -f -sel clip
+" map "+p :r!xclip -o -sel clip
+
+nnoremap <leader>ms :mksession! /tmp/vimsession<cr>
+nnoremap <leader>os :so /tmp/vimsession<cr>
+
+" Move visually selected line up and down
+function! g:CheckCurrentLine() abort
+  return line("v") == line('$') || line('.') == line('$')
+endfunction
+vnoremap J dp`[V`]
+vnoremap <expr> K (CheckCurrentLine()) ? 'dP`[V`]':'dkP`[V`]'
