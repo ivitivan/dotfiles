@@ -12,7 +12,8 @@ Plug 'https://github.com/SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
 Plug 'https://github.com/mxw/vim-jsx'
-Plug 'https://github.com/peitalin/vim-jsx-typescript'
+" Plug 'https://github.com/peitalin/vim-jsx-typescript'
+Plug 'https://github.com/HerringtonDarkholme/yats.vim'
 Plug 'https://github.com/tpope/vim-fugitive'
 Plug 'https://github.com/Raimondi/delimitMate'
 Plug 'https://github.com/machakann/vim-sandwich'
@@ -54,6 +55,8 @@ Plug 'https://github.com/qpkorr/vim-bufkill'
 " Plug 'https://github.com/aanari/vim-tsx-pretty'
 " Plug 'https://github.com/leafgarland/typescript-vim'
 " Plug 'https://github.com/Quramy/tsuquyomi'
+Plug 'https://github.com/rhysd/vim-grammarous'
+Plug 'https://github.com/itchyny/calendar.vim'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -170,7 +173,6 @@ augroup highlight80
   autocmd FileType javascript.jsx match OverLength /\%81v.\+/
 augroup END
 
-" scrolloff
 set scrolloff=5
 
 highlight MatchParen ctermbg=9 term=bold ctermfg=none
@@ -179,11 +181,6 @@ highlight MatchParen ctermbg=9 term=bold ctermfg=none
 noremap <silent> <F4> :let @+=expand("%:p")<CR>
 
 set incsearch
-
-"if !exists('g:airline_symbols')
-  "let g:airline_symbols = {}
-"endif
-"let g:airline_symbols.space = "\ua0"
 
 nmap ,cs :let @+=expand("%")<CR>
 let g:localvimrc_ask=0
@@ -194,7 +191,7 @@ set diffopt+=vertical
 " Show status line
 set laststatus=2
 " Show full name in statusline
-set statusline+=%F
+set statusline=%F
 
 " Remove header in explorer
 let g:netrw_banner=0
@@ -373,7 +370,7 @@ set statusline+=,\ col:\ %c
 
 nnoremap <leader>d :topleft split <bar> term ranger<cr>a
 nnoremap <leader>D :topleft split <bar> execute 'term ranger '.expand("%:h")<cr>a
-autocmd TermClose *:ranger,*:/bin/zsh bd!
+autocmd TermClose *:ranger*,*:/bin/zsh bd!
 
 inoremap <c-t> <esc>vBs<<esc>pa></<esc>pa><esc>F<i
 let g:NERDSpaceDelims = 1
@@ -509,3 +506,7 @@ function! g:CheckCurrentLine() abort
 endfunction
 vnoremap J dp`[V`]
 vnoremap <expr> K (CheckCurrentLine()) ? 'dP`[V`]':'dkP`[V`]'
+
+hi Search ctermfg=0 ctermbg=3
+
+syntax sync fromstart
