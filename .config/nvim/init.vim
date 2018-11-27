@@ -163,7 +163,7 @@ nnoremap <M-p> :bprevious<CR>
 " Search the word on the Internet under cursor
 " nmap <Leader>s :silent !google-chrome-stable 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
 
-nmap <leader>s yiw:Ack <c-r>"<cr>
+nmap <leader>s yiw:Ack <c-r>" <bar>set hlsearch<cr>
 
 " 80 characters
 highlight OverLength term=underline cterm=underline
@@ -280,7 +280,7 @@ augroup runJava
 augroup END
 
 "let $CLASSPATH='.:./stdlib:./exercises/*:./programs/*'
-nnoremap <leader>n :nohl<cr>
+nnoremap <leader>n :set hlsearch!<cr>
 set mouse=a
 
 nnoremap <leader>a :e %:h/
