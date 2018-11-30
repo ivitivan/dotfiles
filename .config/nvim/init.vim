@@ -24,6 +24,7 @@ Plug 'https://github.com/majutsushi/tagbar'
 Plug 'https://github.com/mileszs/ack.vim'
 Plug 'https://github.com/mileszs/ack.vim'
 Plug 'https://github.com/neomake/neomake'
+" Plug 'https://github.com/w0rp/ale'
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
 Plug 'https://github.com/vim-scripts/JavaScript-Indent'
@@ -57,6 +58,7 @@ Plug 'https://github.com/qpkorr/vim-bufkill'
 " Plug 'https://github.com/Quramy/tsuquyomi'
 Plug 'https://github.com/rhysd/vim-grammarous'
 Plug 'https://github.com/itchyny/calendar.vim'
+" Plug 'https://github.com/lornix/vim-scrollbar'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -140,7 +142,7 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
-set listchars=eol:⏎,tab:>>,trail:~,extends:>,precedes:<
+set listchars=eol:⏎,tab:··,trail:~,extends:>,precedes:<
 set list
 
 " Backspace
@@ -163,7 +165,11 @@ nnoremap <M-p> :bprevious<CR>
 " Search the word on the Internet under cursor
 " nmap <Leader>s :silent !google-chrome-stable 'https://google.com/\#q=<C-R><C-W>'<CR><C-L>
 
-nmap <leader>s yiw:Ack <c-r>" <bar>set hlsearch<cr>
+" Search
+nnoremap <leader>s yiw:set nohlsearch<bar>Ack <c-r>" <cr>
+nnoremap * *:set hlsearch<cr>
+nnoremap <leader>h *N:set hlsearch<cr>
+" nnoremap <leader>h :let @/ = '\<'.expand('<cword>').'\>'\<bar>set hlsearch<cr>
 
 " 80 characters
 highlight OverLength term=underline cterm=underline
@@ -191,7 +197,11 @@ set diffopt+=vertical
 " Show status line
 set laststatus=2
 " Show full name in statusline
-set statusline=%F
+" set statusline=%F
+" set statusline+=,\ col:\ %c
+set statusline=%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
+
+
 
 " Remove header in explorer
 let g:netrw_banner=0
@@ -366,8 +376,6 @@ function! s:check_back_space() abort "{{{
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
-set statusline+=,\ col:\ %c
-
 nnoremap <leader>d :topleft split <bar> term ranger<cr>a
 nnoremap <leader>D :topleft split <bar> execute 'term ranger '.expand("%:h")<cr>a
 autocmd TermClose *:ranger*,*:/bin/zsh bd!
@@ -477,8 +485,6 @@ nnoremap <leader>vs :vs %:h/
 " hi def link User2 DiffDelete
 " set stl=%!STL()
 
-set laststatus=2
-
 " au BufRead *.html set filetype=htmlm4
 
 function! g:OpenInGitlab() abort
@@ -491,7 +497,7 @@ endfunction
 nnoremap <leader>g :call OpenInGitlab()<cr>
 
 " nnoremap <leader>gf *ggnf'lgf
-let @m = "*ggnf'lgfn"
+let @m = "*ggnf'lgfggn"
 nnoremap <leader>gf @m
 
 " vmap "+y :!xclip -f -sel clip
@@ -510,3 +516,11 @@ vnoremap <expr> K (CheckCurrentLine()) ? 'dP`[V`]':'dkP`[V`]'
 hi Search ctermfg=0 ctermbg=3
 
 syntax sync fromstart
+
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\}
+
+set sidescroll=1
+
+autocmd FileType javascript,javascript.jsx :iabbrev <buffer> if if ()<left>
