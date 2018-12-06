@@ -199,7 +199,7 @@ set laststatus=2
 " Show full name in statusline
 " set statusline=%F
 " set statusline+=,\ col:\ %c
-set statusline=%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
+set statusline=%f[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
 
 
 
@@ -378,7 +378,7 @@ endfunction"}}}
 
 nnoremap <leader>d :topleft split <bar> term ranger<cr>a
 nnoremap <leader>D :topleft split <bar> execute 'term ranger '.expand("%:h")<cr>a
-autocmd TermClose *:ranger*,*:/bin/zsh bd!
+autocmd TermClose *:ranger*,*:/bin/zsh :bd!
 
 inoremap <c-t> <esc>vBs<<esc>pa></<esc>pa><esc>F<i
 let g:NERDSpaceDelims = 1
@@ -524,3 +524,6 @@ let g:ale_linters = {
 set sidescroll=1
 
 autocmd FileType javascript,javascript.jsx :iabbrev <buffer> if if ()<left>
+
+nnoremap <leader>qc :ccl<cr>
+nnoremap <leader>qo :copen<cr>
