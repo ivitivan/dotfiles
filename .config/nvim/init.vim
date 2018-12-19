@@ -4,15 +4,22 @@ filetype off                  " required
 
 call plug#begin('~/.config/nvim/plugins')
 Plug 'pangloss/vim-javascript'
-" Plug 'leafgarland/typescript-vim'
+
+" Ctrlp
 Plug 'https://github.com/ctrlpvim/ctrlp.vim'
-"Plug 'https://github.com/Valloric/YouCompleteMe'
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -s -l --nocolor -g ""'
+endif
+let g:ctrlp_use_caching = 0
+let g:ctrlp_match_current_file = 1
+
 Plug 'https://github.com/marijnh/tern_for_vim'
-Plug 'https://github.com/SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
 Plug 'https://github.com/mxw/vim-jsx'
-" Plug 'https://github.com/peitalin/vim-jsx-typescript'
 Plug 'https://github.com/HerringtonDarkholme/yats.vim'
 Plug 'https://github.com/tpope/vim-fugitive'
 Plug 'https://github.com/Raimondi/delimitMate'
@@ -23,14 +30,23 @@ Plug 'https://github.com/severin-lemaignan/vim-minimap'
 Plug 'https://github.com/majutsushi/tagbar'
 Plug 'https://github.com/mileszs/ack.vim'
 Plug 'https://github.com/mileszs/ack.vim'
+
+" NeoMake
 Plug 'https://github.com/neomake/neomake'
-" Plug 'https://github.com/w0rp/ale'
+augroup neomake
+  autocmd!
+
+  autocmd FileType javascript,javascript.jsx let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+  autocmd FileType typescript,typescriptreact,typescript.tsx let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
+
+  autocmd BufWritePost,BufEnter * Neomake
+augroup END
+
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
 Plug 'https://github.com/vim-scripts/JavaScript-Indent'
 Plug 'https://github.com/KabbAmine/vCoolor.vim'
 Plug 'https://github.com/groenewege/vim-less'
-" Plug 'https://github.com/embear/vim-localvimrc'
 Plug 'metakirby5/codi.vim'
 Plug 'https://github.com/tpope/vim-unimpaired'
 Plug 'https://github.com/tpope/vim-vinegar'
@@ -49,16 +65,45 @@ Plug 'https://github.com/machakann/vim-highlightedyank'
 Plug 'https://github.com/vim-scripts/ReplaceWithRegister'
 Plug 'https://github.com/yuttie/comfortable-motion.vim'
 Plug 'https://github.com/moll/vim-node'
-Plug 'https://github.com/lfilho/cosco.vim'
-" Plug 'https://gitlab.com/Jrahme/smart-mark.git'
 Plug 'https://github.com/neovimhaskell/haskell-vim'
 Plug 'https://github.com/qpkorr/vim-bufkill'
-" Plug 'https://github.com/aanari/vim-tsx-pretty'
-" Plug 'https://github.com/leafgarland/typescript-vim'
-" Plug 'https://github.com/Quramy/tsuquyomi'
+
+" bufexplorer
+Plug 'https://github.com/jlanzarotta/bufexplorer'
+
+" Spelling
 Plug 'https://github.com/rhysd/vim-grammarous'
+
 Plug 'https://github.com/itchyny/calendar.vim'
-" Plug 'https://github.com/lornix/vim-scrollbar'
+
+
+" NERDTree
+Plug 'https://github.com/scrooloose/nerdtree'
+let g:NERDSpaceDelims = 1
+let g:NERDDefaultAlign = 'left'
+hi HighlightedyankRegion cterm=reverse gui=reverse
+
+" Close tags
+Plug 'https://github.com/alvan/vim-closetag'
+let g:closetag_filenames = '*.jsx,*.tsx'
+let g:closetag_xhtml_filenames = '*.jsx'
+
+" language server protocol
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'https://github.com/ryanolsonx/vim-lsp-typescript'
+
+if executable('typescript-language-server')
+  augroup disable_autocomments
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'typescript-language-server',
+      \ 'cmd': { server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
+      \ 'root_uri': { server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_directory(lsp#utils#get_buffer_path(), '.git/..'))},
+      \ 'whitelist': ['typescript', 'typescript.tsx', 'javascript', 'javascript.jsx']
+      \ })
+  augroup END
+endif
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -79,26 +124,8 @@ let g:UltiSnipsJumpForwardTrigger="<c-l>"
 let g:UltiSnipsSnippetsDir="~/.config/nvim/UltiSnips"
 "let g:UltiSnipsJumpBackwardTrigger="<c-h>"
 
-" Ctrl p Settings
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -s -l --nocolor -g ""'
-endif
-let g:ctrlp_use_caching = 0
-let g:ctrlp_match_current_file = 1
-
-" YouCompleteMe Settings
-let g:ycm_add_preview_to_completeopt=0
-let g:ycm_autoclose_preview_window_after_completion=1
-
 " Vim-jsx Settings
 let g:jsx_ext_required = 0
-
-" Cosco settings
-autocmd FileType javascript,css nnoremap <silent> <Leader>; :call cosco#commaOrSemiColon()<CR>
-autocmd FileType javascript,css inoremap <silent> <Leader>; <c-o>:call cosco#commaOrSemiColon()<CR>
 
 " Make paste and copy work
 "set clipboard+=unnamed
@@ -153,8 +180,12 @@ set backspace=2
 set hidden
 " Undo
 set undofile
+
 " Disable autocomments
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+augroup disable_autocomments
+  autocmd!
+  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+augroup END
 
 " Key bindings
 " execute "set <M-n>=\en"
@@ -249,15 +280,10 @@ endif
 
 hi xmlEndTag ctermfg=4
 
-autocmd FileType javascript,javascript.jsx let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-autocmd FileType typescript,typescriptreact,typescript.tsx let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
-
 let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
 
 let g:neomake_typescript_tsc_maker = {
     \ 'args': ['--module', 'system', '--target', 'ES5', '--experimentalDecorators', '--noEmit', '--jsx'] }
-
-autocmd! BufWritePost,BufEnter * Neomake
 
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
@@ -265,6 +291,7 @@ augroup sourceVimrc
   autocmd!
   autocmd BufWritePost ~/.config/nvim/init.vim :source $MYVIMRC
 augroup END
+
 nnoremap <leader>ve :vsplit $MYVIMRC<cr>
 
 source ~/.config/nvim/abbreviations.vim
@@ -376,14 +403,18 @@ function! s:check_back_space() abort "{{{
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
+" Ranger
 nnoremap <leader>d :topleft split <bar> term ranger<cr>a
 nnoremap <leader>D :topleft split <bar> execute 'term ranger '.expand("%:h")<cr>a
-autocmd TermClose *:ranger*,*:/bin/zsh :bd!
 
-inoremap <c-t> <esc>vBs<<esc>pa></<esc>pa><esc>F<i
-let g:NERDSpaceDelims = 1
-let g:NERDDefaultAlign = 'left'
-hi HighlightedyankRegion cterm=reverse gui=reverse
+" Close terminal, when process ends
+augroup close_terminal
+  autocmd!
+  autocmd TermClose *:ranger*,*:/bin/zsh :bd!
+augroup END
+
+" Create html tag
+" inoremap <c-t> <esc>vBs<<esc>pa></<esc>pa><esc>F<i
 
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 set path=.,src,node_modules
@@ -391,27 +422,8 @@ set suffixesadd=.js,.jsx,.tsx
 
 runtime macros/sandwich/keymap/surround.vim
 
-function! g:Eslint() abort
-  let current_file = expand("%")
-  execute '!npx eslint --fix '.current_file
-endfunction
-
-function! g:Tslint() abort
-  let current_file = expand("%")
-  execute '!npx tslint --fix --jsx '.current_file
-endfunction
-
-autocmd FileType javascript.jsx,javascript nnoremap <leader>l :call Eslint()<cr>:e<cr><cr>
-autocmd FileType typescriptreact,typescript,typescript.tsx nnoremap <leader>l :call Tslint()<cr>:e<cr><cr>
-
-" autocmd BufWritePost *.js,*.jsx call Eslint()
-
 set splitright
 
-autocmd BufRead,BufNewFile,BufEnter *.js,*.jsx,*.ts,*.tsx nnoremap <leader>rct :botright split <bar> execute 'term yarn test --testPathPattern=' . expand('%')<cr>a
-autocmd BufRead,BufNewFile,BufEnter *.js,*.jsx,*.ts,*.tsx nnoremap <leader>uct :botright split <bar> execute 'term yarn test -u --testPathPattern=' . expand('%')<cr>a
-autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rct :botright split <bar> execute 'term yarn test-e2e --runInBand --testPathPattern=' . expand('%')<cr>a
-autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rch :botright split <bar> execute 'term yarn test-e2e-headful --runInBand --testPathPattern=' . expand('%')<cr>a
 nnoremap <leader>rt :botright split <bar> term yarn test<cr>a
 nnoremap <leader>re :botright split <bar> term yarn test-e2e --runInBand --bail<cr>a
 
@@ -424,10 +436,6 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
-autocmd FileWritePost javascript,javascript.jsx :call Eslint()<cr>:e<cr><cr>
-
-
-" autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 set completeopt-=preview
 " tnoremap <c-d> <c-\><c-n>:bd!<cr>
 
@@ -455,37 +463,11 @@ highlight tsxCloseString ctermfg=4
 highlight htmlTag ctermfg=4
 highlight htmlTagName ctermfg=4
 
+" set wildcharm=<C-z>
+" nnoremap ,e :e **/*<C-z><S-Tab>
 nnoremap <leader>e :e %:h/
 nnoremap <leader>v :vs %:h/
 nnoremap <leader>vs :vs %:h/
-
-" Scrollbar
-" func! STL()
-"   let stl = '%f [%{(&fenc==""?&enc:&fenc).((exists("+bomb") && &bomb)?",B":"")}%M%R%H%W] %y [%l/%L,%v] [%p%%]'
-"   let barWidth = &columns - 65 " <-- wild guess
-"   let barWidth = barWidth < 3 ? 3 : barWidth
-
-"   if line('$') > 1
-"     let progress = (line('.')-1) * (barWidth-1) / (line('$')-1)
-"   else
-"     let progress = barWidth/2
-"   endif
-
-"   " line + vcol + %
-"   let pad = strlen(line('$'))-strlen(line('.')) + 3 - strlen(virtcol('.')) + 3 - strlen(line('.')*100/line('$'))
-"   let bar = repeat(' ',pad).' [%1*%'.barWidth.'.'.barWidth.'('
-"         \.repeat('-',progress )
-"         \.'%2*0%1*'
-"         \.repeat('-',barWidth - progress - 1).'%0*%)%<]'
-
-"   return stl.bar
-" endfun
-
-" hi def link User1 DiffAdd
-" hi def link User2 DiffDelete
-" set stl=%!STL()
-
-" au BufRead *.html set filetype=htmlm4
 
 function! g:OpenInGitlab() abort
   let ln = "https://git.itv.restr.im/ITV.RT/b2b/hotel-tv-manager/blob/master/" . GetCurrentFileName() . "\\#L" . line(".")
@@ -523,7 +505,70 @@ let g:ale_linters = {
 
 set sidescroll=1
 
-autocmd FileType javascript,javascript.jsx :iabbrev <buffer> if if ()<left>
+function! EatChar(pat)
+    let c = nr2char(getchar(0))
+    return (c =~ a:pat) ? '' : c
+endfunction
+
+function! MakeSpacelessIabbrev(from, to)
+    execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
+endfunction
+function! MakeSpacelessBufferIabbrev(from, to)
+    execute "iabbrev <silent> <buffer> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
+  endfunction
+
+func! Eatchar(pat)
+  let c = nr2char(getchar(0))
+  return (c =~ a:pat) ? '' : c
+endfunc
+
+iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
+
 
 nnoremap <leader>qc :ccl<cr>
 nnoremap <leader>qo :copen<cr>
+
+set title
+augroup terminalTitle
+  autocmd!
+  autocmd VimEnter * let &titlestring = "nvim: " . getcwd()
+augroup END
+
+nnoremap <BS> :NERDTreeToggle<cr>
+
+" JavaScript
+function! g:Eslint() abort
+  let current_file = expand("%")
+  execute '!npx eslint --fix '.current_file
+endfunction
+
+function! g:Tslint() abort
+  let current_file = expand("%")
+  execute '!npx tslint --fix --jsx '.current_file
+endfunction
+
+augroup javascriptLinters
+  autocmd!
+  autocmd FileType javascript.jsx,javascript nnoremap <leader>l :call Eslint()<cr>:e<cr><cr>
+  autocmd FileType typescriptreact,typescript,typescript.tsx nnoremap <leader>l :call Tslint()<cr>:e<cr><cr>
+
+  autocmd BufRead,BufNewFile,BufEnter *.js,*.jsx,*.ts,*.tsx nnoremap <leader>rct :botright split <bar> execute 'term yarn test --testPathPattern=' . expand('%')<cr>a
+  autocmd BufRead,BufNewFile,BufEnter *.js,*.jsx,*.ts,*.tsx nnoremap <leader>uct :botright split <bar> execute 'term yarn test -u --testPathPattern=' . expand('%')<cr>a
+  autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rct :botright split <bar> execute 'term yarn test-e2e --runInBand --testPathPattern=' . expand('%')<cr>a
+  autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rch :botright split <bar> execute 'term yarn test-e2e-headful --runInBand --testPathPattern=' . expand('%')<cr>a
+
+  autocmd FileWritePost javascript,javascript.jsx :call Eslint()<cr>:e<cr><cr>
+augroup END
+
+augroup javascript_abbreviations
+  autocmd!
+  au FileType javascript,javascript.jsx iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
+  au FileType javascript,javascript.jsx iabbr <silent>clog console.log();<C-R>=EatChar('\s')<CR><left><left>
+  " au FileType javascript,javascript.jsx call MakeSpacelessBufferIabbrev('clog', 'console.log();<left><left>')
+  au FileType javascript,javascript.jsx call MakeSpacelessBufferIabbrev('im', "import  from '';<left><left><left><left><left><left><left><left><left>")
+augroup END
+
+augroup javscript
+  autocmd!
+  au Filetype javascript,javascript.jsx setlocal include=^\\s*[^\/]\\+\\(from\\\|require(['\"]\\)
+augroup END
