@@ -1,6 +1,5 @@
-" Vundle settings
-set nocompatible              " be iMproved, required
-filetype off                  " required
+set nocompatible
+filetype off
 
 call plug#begin('~/.config/nvim/plugins')
 Plug 'pangloss/vim-javascript'
@@ -33,14 +32,9 @@ Plug 'https://github.com/mileszs/ack.vim'
 
 " NeoMake
 Plug 'https://github.com/neomake/neomake'
-augroup neomake
-  autocmd!
-
-  autocmd FileType javascript,javascript.jsx let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-  autocmd FileType typescript,typescriptreact,typescript.tsx let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
-
-  autocmd BufWritePost,BufEnter * Neomake
-augroup END
+autocmd FileType javascript,javascript.jsx let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+autocmd FileType typescript,typescriptreact,typescript.tsx let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
+autocmd! BufWritePost,BufEnter * Neomake
 
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
@@ -175,6 +169,13 @@ set list
 " Backspace
 set backspace=2
 
+" Vimscript file settings ---------------------- {{{
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
+
 " Edit workflow
 " Let vim switch between files without annoying saving message
 set hidden
@@ -227,10 +228,7 @@ set diffopt+=vertical
 
 " Show status line
 set laststatus=2
-" Show full name in statusline
-" set statusline=%F
-" set statusline+=,\ col:\ %c
-set statusline=%f[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
+set statusline=%f\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h%m%r%y%=%c,%l/%L\ %P
 
 
 
@@ -318,6 +316,10 @@ augroup END
 
 "let $CLASSPATH='.:./stdlib:./exercises/*:./programs/*'
 nnoremap <leader>n :set hlsearch!<cr>
+
+nnoremap n :set hlsearch<cr>n
+nnoremap N :set hlsearch<cr>N
+
 set mouse=a
 
 nnoremap <leader>a :e %:h/
