@@ -3,18 +3,8 @@ filetype off
 
 call plug#begin('~/.config/nvim/plugins')
 Plug 'pangloss/vim-javascript'
-
-" Ctrlp
-Plug 'https://github.com/ctrlpvim/ctrlp.vim'
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -s -l --nocolor -g ""'
-endif
-let g:ctrlp_use_caching = 0
-let g:ctrlp_match_current_file = 1
-
+Plug '/usr/bin/fzf'
+Plug 'https://github.com/junegunn/fzf.vim'
 Plug 'https://github.com/marijnh/tern_for_vim'
 Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
@@ -29,13 +19,6 @@ Plug 'https://github.com/severin-lemaignan/vim-minimap'
 Plug 'https://github.com/majutsushi/tagbar'
 Plug 'https://github.com/mileszs/ack.vim'
 Plug 'https://github.com/mileszs/ack.vim'
-
-" NeoMake
-Plug 'https://github.com/neomake/neomake'
-autocmd FileType javascript,javascript.jsx let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-autocmd FileType typescript,typescriptreact,typescript.tsx let g:neomake_typescript_tslint_exe = $PWD .'/node_modules/.bin/tslint'
-autocmd! BufWritePost,BufEnter * Neomake
-
 Plug 'https://github.com/grassdog/tagman.vim'
 Plug 'https://github.com/wavded/vim-stylus'
 Plug 'https://github.com/vim-scripts/JavaScript-Indent'
@@ -51,7 +34,7 @@ Plug 'https://github.com/hail2u/vim-css3-syntax'
 Plug 'sbdchd/neoformat'
 Plug 'https://github.com/vim-scripts/dbext.vim'
 Plug 'https://github.com/jiangmiao/auto-pairs'
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'https://github.com/lambdalisue/lista.nvim'
 Plug 'https://github.com/lambdalisue/vim-rplugin'
 Plug 'https://github.com/bradford-smith94/quick-scope'
@@ -85,32 +68,38 @@ let g:closetag_xhtml_filenames = '*.jsx'
 " language server protocol
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
-Plug 'https://github.com/ryanolsonx/vim-lsp-typescript'
+Plug 'https://github.com/prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+let s:asyncomplete_blacklist = []
 
 if executable('typescript-language-server')
-  augroup disable_autocomments
-    autocmd!
-    autocmd User lsp_setup call lsp#register_server({
+  " npm i -g typescript-language-server
+  let s:asyncomplete_blacklist += ['typescript']
+  au User lsp_setup call lsp#register_server({
       \ 'name': 'typescript-language-server',
-      \ 'cmd': { server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-      \ 'root_uri': { server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_directory(lsp#utils#get_buffer_path(), '.git/..'))},
-      \ 'whitelist': ['typescript', 'typescript.tsx', 'javascript', 'javascript.jsx']
+      \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
+      \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
+      \ 'whitelist': ['typescript', 'typescript.tsx', 'javascript', 'javascript.jsx'],
       \ })
-  augroup END
+  autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx nnoremap <buffer><silent> <c-]>  :LspDefinition<cr>
+  autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx nnoremap <buffer><silent> K :LspHover<cr>
+  autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx setlocal omnifunc=lsp#complete
 endif
-
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#file#enable_buffer_path = 1
-let g:deoplete#enable_smart_case = 1
 
 call plug#end()
+
+" fzf
+nnoremap <c-p> :Files<cr>
+nnoremap <c-n> :Buffers<cr>
+nnoremap <c-h> :History<cr>
+
+" language-server-protocol
+let g:lsp_signs_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1 
+let g:lsp_signs_error = {'text': '✗'}
+let g:lsp_signs_warning = {'text': '‼'}
+let g:lsp_signs_hint = {'text': '!'}
 
 " UltiSnips settings
 let g:UltiSnipsExpandTrigger="<c-l>"
@@ -226,11 +215,16 @@ let g:localvimrc_ask=0
 "Open Gdiff in vertical mode
 set diffopt+=vertical
 
+hi User1 ctermbg=19 ctermfg=11
+
 " Show status line
 set laststatus=2
-set statusline=%f\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ %h%m%r%y%=%c,%l/%L\ %P
-
-
+set statusline=
+set statusline+=%1*
+set statusline+=%f\ 
+set statusline+=%* 
+set statusline+=[%{strlen(&fenc)?&fenc:'none'},%{&ff}]\ 
+set statusline+=%h%m%r%y%=%c,%l/%L\ %P
 
 " Remove header in explorer
 let g:netrw_banner=0
@@ -277,11 +271,6 @@ if filereadable(expand("~/.vimrc_background"))
 endif
 
 hi xmlEndTag ctermfg=4
-
-let g:neomake_sss_eslint_exe = $PWD .'/node_modules/.bin/stylelint'
-
-let g:neomake_typescript_tsc_maker = {
-    \ 'args': ['--module', 'system', '--target', 'ES5', '--experimentalDecorators', '--noEmit', '--jsx'] }
 
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
@@ -336,74 +325,6 @@ function! g:Open_term_in_cur_dir() abort
 endfunction
 
 nnoremap <leader>T :call g:Open_term_in_cur_dir()<CR>
-
-" Set bin if you have many instalations
-let g:deoplete#sources#ternjs#tern_bin = '/usr/bin/tern'
-let g:deoplete#sources#ternjs#timeout = 1
-
-" Whether to include the types of the completions in the result data. Default: 0
-let g:deoplete#sources#ternjs#types = 1
-
-" Whether to include the distance (in scopes for variables, in prototypes for 
-" properties) between the completions and the origin position in the result 
-" data. Default: 0
-let g:deoplete#sources#ternjs#depths = 1
-
-" Whether to include documentation strings (if found) in the result data.
-" Default: 0
-let g:deoplete#sources#ternjs#docs = 1
-
-" When on, only completions that match the current word at the given point will
-" be returned. Turn this off to get all results, so that you can filter on the 
-" client side. Default: 1
-let g:deoplete#sources#ternjs#filter = 0
-
-" Whether to use a case-insensitive compare between the current word and 
-" potential completions. Default 0
-let g:deoplete#sources#ternjs#case_insensitive = 1
-
-" When completing a property and no completions are found, Tern will use some 
-" heuristics to try and return some properties anyway. Set this to 0 to 
-" turn that off. Default: 1
-let g:deoplete#sources#ternjs#guess = 0
-
-" Determines whether the result set will be sorted. Default: 1
-let g:deoplete#sources#ternjs#sort = 0
-
-" When disabled, only the text before the given position is considered part of 
-" the word. When enabled (the default), the whole variable name that the cursor
-" is on will be included. Default: 1
-let g:deoplete#sources#ternjs#expand_word_forward = 0
-
-" Whether to ignore the properties of Object.prototype unless they have been 
-" spelled out by at least two characters. Default: 1
-let g:deoplete#sources#ternjs#omit_object_prototype = 0
-
-" Whether to include JavaScript keywords when completing something that is not 
-" a property. Default: 0
-let g:deoplete#sources#ternjs#include_keywords = 1
-
-" If completions should be returned when inside a literal. Default: 1
-let g:deoplete#sources#ternjs#in_literal = 0
-
-
-"Add extra filetypes
-let g:deoplete#sources#ternjs#filetypes = [
-                \ 'jsx',
-                \ 'javascript.jsx',
-                \ 'vue',
-                \ ]
-let g:tern#command = ["tern"]
-let g:tern#arguments = ["--persistent"]
-
-inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ deoplete#mappings#manual_complete()
-function! s:check_back_space() abort "{{{
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction"}}}
 
 " Ranger
 nnoremap <leader>d :topleft split <bar> term ranger<cr>a
