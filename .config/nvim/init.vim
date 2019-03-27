@@ -2,7 +2,9 @@ set nocompatible
 filetype off
 
 call plug#begin('~/.config/nvim/plugins')
+Plug 'https://github.com/ap/vim-css-color'
 Plug 'pangloss/vim-javascript'
+Plug 'prettier/vim-prettier', { 'do': 'npm install' }
 Plug '/usr/bin/fzf'
 Plug 'https://github.com/junegunn/fzf.vim'
 Plug 'https://github.com/marijnh/tern_for_vim'
@@ -62,8 +64,8 @@ hi HighlightedyankRegion cterm=reverse gui=reverse
 
 " Close tags
 Plug 'https://github.com/alvan/vim-closetag'
-let g:closetag_filenames = '*.jsx,*.tsx'
-let g:closetag_xhtml_filenames = '*.jsx'
+let g:closetag_filenames = '*.js,*.jsx,*.tsx'
+let g:closetag_xhtml_filenames = '*.js,*.jsx'
 
 " language server protocol
 Plug 'prabirshrestha/async.vim'
@@ -445,7 +447,7 @@ func! Eatchar(pat)
   return (c =~ a:pat) ? '' : c
 endfunc
 
-iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
+" iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
 
 
 nnoremap <leader>qc :ccl<cr>
@@ -485,7 +487,7 @@ augroup END
 
 augroup javascript_abbreviations
   autocmd!
-  au FileType javascript,javascript.jsx iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
+  " au FileType javascript,javascript.jsx iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
   au FileType javascript,javascript.jsx iabbr <silent>clog console.log();<C-R>=EatChar('\s')<CR><left><left>
   " au FileType javascript,javascript.jsx call MakeSpacelessBufferIabbrev('clog', 'console.log();<left><left>')
   au FileType javascript,javascript.jsx call MakeSpacelessBufferIabbrev('im', "import  from '';<left><left><left><left><left><left><left><left><left>")
@@ -495,3 +497,7 @@ augroup javscript
   autocmd!
   au Filetype javascript,javascript.jsx setlocal include=^\\s*[^\/]\\+\\(from\\\|require(['\"]\\)
 augroup END
+
+" set keymap=russian-jcukenwin
+
+inoreabbrev REact React
