@@ -3,54 +3,56 @@ set nocompatible
 filetype off
 
 call plug#begin('~/.config/nvim/plugins')
- Plug 'https://github.com/ap/vim-css-color'
- Plug 'pangloss/vim-javascript'
- Plug 'prettier/vim-prettier', { 'do': 'npm install' }
- Plug '/usr/bin/fzf'
+Plug 'https://github.com/sheerun/vim-polyglot'
+Plug 'https://github.com/ap/vim-css-color'
+" Plug 'pangloss/vim-javascript'
+" Plug 'prettier/vim-prettier', { 'do': 'npm install' }
+Plug '/usr/bin/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
- " Plug 'https://github.com/marijnh/tern_for_vim'
- " Plug 'honza/vim-snippets'
- Plug 'https://github.com/scrooloose/nerdcommenter'
- Plug 'https://github.com/mxw/vim-jsx'
+" Plug 'https://github.com/marijnh/tern_for_vim'
+" Plug 'honza/vim-snippets'
+Plug 'https://github.com/scrooloose/nerdcommenter'
+Plug 'https://github.com/mxw/vim-jsx'
 
- " Typescript highlighter
- Plug 'https://github.com/HerringtonDarkholme/yats.vim'
- Plug 'https://github.com/tpope/vim-fugitive'
+" Typescript highlighter
+Plug 'https://github.com/HerringtonDarkholme/yats.vim'
+Plug 'https://github.com/tpope/vim-fugitive'
 
- " automatic closing of quotes
- Plug 'https://github.com/Raimondi/delimitMate'
+" automatic closing of quotes
+Plug 'https://github.com/Raimondi/delimitMate'
 
- " Set of operator and textobject plugins to add/delete/replace surroundings of a sandwiched textobject
- Plug 'https://github.com/machakann/vim-sandwich'
+" Set of operator and textobject plugins to add/delete/replace surroundings of a sandwiched textobject
+Plug 'https://github.com/machakann/vim-sandwich'
 
- Plug 'https://github.com/tpope/vim-abolish'
- Plug 'https://github.com/severin-lemaignan/vim-minimap'
- Plug 'https://github.com/majutsushi/tagbar'
- Plug 'https://github.com/mileszs/ack.vim'
- " Plug 'https://github.com/grassdog/tagman.vim'
- Plug 'https://github.com/KabbAmine/vCoolor.vim'
+Plug 'https://github.com/tpope/vim-abolish'
+Plug 'https://github.com/severin-lemaignan/vim-minimap'
+Plug 'https://github.com/majutsushi/tagbar'
+Plug 'https://github.com/mileszs/ack.vim'
+" Plug 'https://github.com/grassdog/tagman.vim'
+Plug 'https://github.com/KabbAmine/vCoolor.vim'
 
- Plug 'metakirby5/codi.vim'
- Plug 'https://github.com/tpope/vim-unimpaired'
- Plug 'https://github.com/tpope/vim-vinegar'
- Plug 'https://github.com/chrisbra/Colorizer'
- Plug 'https://github.com/hail2u/vim-css3-syntax'
- " Plug 'sbdchd/neoformat'
- Plug 'https://github.com/vim-scripts/dbext.vim'
+Plug 'metakirby5/codi.vim'
+Plug 'https://github.com/tpope/vim-unimpaired'
+Plug 'https://github.com/tpope/vim-vinegar'
+Plug 'https://github.com/chrisbra/Colorizer'
+" Plug 'https://github.com/hail2u/vim-css3-syntax'
+" Plug 'sbdchd/neoformat'
+Plug 'https://github.com/vim-scripts/dbext.vim'
 
- " Plug 'https://github.com/jiangmiao/auto-pairs'
+" Plug 'https://github.com/jiangmiao/auto-pairs'
 
- " Plug 'https://github.com/lambdalisue/lista.nvim'
+" Plug 'https://github.com/lambdalisue/lista.nvim'
 
- Plug 'https://github.com/lambdalisue/vim-rplugin'
+Plug 'https://github.com/lambdalisue/vim-rplugin'
 
- Plug 'https://github.com/bradford-smith94/quick-scope'
- Plug 'https://github.com/machakann/vim-highlightedyank'
- Plug 'https://github.com/vim-scripts/ReplaceWithRegister'
- Plug 'https://github.com/yuttie/comfortable-motion.vim'
- Plug 'https://github.com/moll/vim-node'
- Plug 'https://github.com/neovimhaskell/haskell-vim'
- Plug 'https://github.com/qpkorr/vim-bufkill'
+Plug 'https://github.com/bradford-smith94/quick-scope'
+Plug 'https://github.com/machakann/vim-highlightedyank'
+Plug 'https://github.com/vim-scripts/ReplaceWithRegister'
+Plug 'https://github.com/yuttie/comfortable-motion.vim'
+" Plug 'https://github.com/moll/vim-node'
+Plug 'https://github.com/neovimhaskell/haskell-vim'
+Plug 'https://github.com/qpkorr/vim-bufkill'
 
 " Install nightly build, replace ./install.sh with install.cmd on windows
 Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
@@ -76,11 +78,14 @@ Plug 'https://github.com/alvan/vim-closetag'
 let g:closetag_filenames = '*.js,*.jsx,*.tsx'
 let g:closetag_xhtml_filenames = '*.js,*.jsx,*tsx'
 
+Plug 'https://github.com/othree/html5.vim'
+
 call plug#end()
 " fzf
  nnoremap <c-p> :FZF<cr>
  nnoremap <c-n> :Buffers<cr>
  nnoremap <c-h> :History<cr>
+" nnoremap <c-m> :Windows<cr>
 
  " Vim-jsx Settings
  let g:jsx_ext_required = 0
@@ -616,3 +621,6 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+
+command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
