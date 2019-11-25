@@ -6,7 +6,7 @@ call plug#begin('~/.config/nvim/plugins')
 Plug 'https://github.com/sheerun/vim-polyglot'
 Plug 'https://github.com/ap/vim-css-color'
 " Plug 'pangloss/vim-javascript'
-" Plug 'prettier/vim-prettier', { 'do': 'npm install' }
+Plug 'prettier/vim-prettier', { 'do': 'npm install' }
 Plug '/usr/bin/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -79,6 +79,9 @@ let g:closetag_filenames = '*.js,*.jsx,*.tsx'
 let g:closetag_xhtml_filenames = '*.js,*.jsx,*tsx'
 
 Plug 'https://github.com/othree/html5.vim'
+Plug 'https://github.com/ryanoasis/vim-devicons'
+Plug 'https://github.com/Shougo/deol.nvim'
+Plug 'https://github.com/mattboehm/vim-unstack'
 
 call plug#end()
 " fzf
@@ -420,10 +423,6 @@ endfunction
 
  syntax sync fromstart
 
- let g:ale_linters = {
- \   'javascript': ['eslint'],
- \}
-
  set sidescroll=1
 
  function! EatChar(pat)
@@ -478,7 +477,7 @@ endfunction
    autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rct :botright split <bar> execute 'term yarn test-e2e --runInBand --testPathPattern=' . expand('%')<cr>a
    autocmd BufRead,BufNewFile,BufEnter */e2e/__*.js nnoremap <localleader>rch :botright split <bar> execute 'term yarn test-e2e-headful --runInBand --testPathPattern=' . expand('%')<cr>a
 
-   autocmd FileWritePost javascript,javascript.jsx :call Eslint()<cr>:e<cr><cr>
+   " autocmd FileWritePost javascript,javascript.jsx :call Eslint()<cr>:e<cr><cr>
  augroup END
 
  augroup javascript_abbreviations
@@ -543,7 +542,7 @@ nmap <silent> ]c <Plug>(coc-diagnostic-next)
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+nmap <silent> <leader>gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -623,4 +622,9 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 
-command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+let g:prettier#autoformat = 1
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html,*.svg PrettierAsync
+
+nnoremap <leader>z :!tidy -mi -xml -wrap 0 %
+
+set encoding=UTF-8
