@@ -1,0 +1,2 @@
+vncviewer 10.50.6.126:5900 -passwd ~/.vncpasswd DotWhenNoCursor=1 
+# vncviewer ivitivan.mynetgear.com:5900 -passwd ~/.vncpasswd DotWhenNoCursor=1 

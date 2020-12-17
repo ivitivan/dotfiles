@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+i3-msg "workspace 1; append_layout /home/vit/scripts/workspace-1.json"
+google-chrome-unstable --new-window http://localhost:3000 &
+urxvt -e zsh -i -c "cd ~/Projects/chords/chords-client && nvim" &
+
+i3-msg "workspace 2; append_layout /home/vit/scripts/workspace-2.json"
+sleep .500s && urxvt -e zsh -i -c "cd ~/Projects/chords/chords-client && yarn start" &
+sleep .500s && urxvt -e zsh -i -c "cd ~/Projects/chords/chords-api && yarn run dev" &

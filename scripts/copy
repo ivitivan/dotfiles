@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+copy="${HOME}/copy"
+
+result=$(ls $copy | rofi -dmenu -p "Copy: ")
+
+cat ${copy}/${result} | xclip -selection clipboard -rmlastnl

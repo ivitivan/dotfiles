@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 3 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,'
+volnoti-show $(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 3 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Add next line to /etc/sysctl.conf to enable forwarding
+# echo "net.ipv4.conf.all.route_localnet=1" >> /etc/sysctl.conf
+
+echo "Port: $1"
+echo "Remote server: $2"
+
+# iptables -t nat -A PREROUTING -i enp6s0 -p tcp --dport $1 -j DNAT --to $2:$3
+
+iptables -t nat -A OUTPUT -m addrtype --src-type LOCAL --dst-type LOCAL -p tcp --dport $1 -j DNAT --to-destination $2
+iptables -t nat -A POSTROUTING -m addrtype --src-type LOCAL --dst-type UNICAST -j MASQUERADE
+
+sysctl -w net.ipv4.conf.all.route_localnet=1

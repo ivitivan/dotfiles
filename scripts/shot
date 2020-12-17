@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Dependencies: 
+# scrot - screenshot tool
+# pinta - drawing tool
+
+# provide -s parameter to get selection
+
+if [ -z "$1" ]
+  then
+    flameshot full -d 500 -p ~/Pictures/screenshots
+  else
+    flameshot gui -d 500 -p ~/Pictures/screenshots
+fi

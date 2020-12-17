@@ -1,0 +1,1 @@
+ss -ltnp | grep $1 | awk '{print $6}' | grep -Eo 'pid=[0-9]*' | grep '[0-9]*' -o | xargs kill

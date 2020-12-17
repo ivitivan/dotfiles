@@ -1,0 +1,43 @@
+// vim:ts=4:sw=4:et
+{
+    "border": "normal",
+    "current_border_width": 3,
+    "floating": "auto_off",
+    "geometry": {
+       "height": 700,
+       "width": 1284,
+       "x": 0,
+       "y": 0
+    },
+    "name": "front",
+    "percent": 0.5,
+    "swallows": [
+       {
+           "class": "^URxvt$",
+           "instance": "^urxvt$"
+       }
+    ],
+    "type": "con"
+}
+
+{
+    "border": "normal",
+    "current_border_width": 3,
+    "floating": "auto_off",
+    "geometry": {
+       "height": 700,
+       "width": 1284,
+       "x": 0,
+       "y": 0
+    },
+    "name": "api",
+    "percent": 0.5,
+    "swallows": [
+       {
+           "class": "^URxvt$",
+           "instance": "^urxvt$"
+       }
+    ],
+    "type": "con"
+}
+

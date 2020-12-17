@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# -hold urxvt option is not needed as vim stays running
+# -i bash option to run interactively
+urxvt -e zsh -i -c "nvim ~/.config/i3/config"

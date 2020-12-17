@@ -13,7 +13,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 " Plug 'https://github.com/marijnh/tern_for_vim'
 " Plug 'honza/vim-snippets'
 Plug 'https://github.com/scrooloose/nerdcommenter'
-Plug 'https://github.com/mxw/vim-jsx'
+" Plug 'https://github.com/mxw/vim-jsx'
 
 " Typescript highlighter
 Plug 'https://github.com/HerringtonDarkholme/yats.vim'
@@ -82,6 +82,22 @@ Plug 'https://github.com/othree/html5.vim'
 Plug 'https://github.com/ryanoasis/vim-devicons'
 Plug 'https://github.com/Shougo/deol.nvim'
 Plug 'https://github.com/mattboehm/vim-unstack'
+Plug 'https://github.com/AndrewRadev/tagalong.vim'
+Plug 'https://github.com/junegunn/goyo.vim'
+" Plug 'leafgarland/typescript-vim'
+" Plug 'peitalin/vim-jsx-typescript'
+Plug 'smallwat3r/vim-simplicity'
+Plug 'huyvohcmc/atlas.vim'
+Plug 'https://github.com/andreasvc/vim-256noir'
+Plug 'lurst/austere.vim'
+Plug 'davidosomething/vim-colors-meh'
+Plug 'andreypopp/vim-colors-plain'
+Plug 'nvim-treesitter/nvim-treesitter'
+
+Plug 'numtostr/FTerm.nvim'
+
+" Plug 'kyazdani42/nvim-web-devicons'
+" Plug 'romgrk/barbar.nvim'
 
 call plug#end()
 " fzf
@@ -104,7 +120,7 @@ call plug#end()
  set t_Co=256
 
 
-colorscheme base16-ocean
+colorscheme plain
  " if $BACKGROUND == 'dark'
  "   set background=dark
  "   colorscheme base16-google
@@ -139,7 +155,7 @@ colorscheme base16-ocean
  set softtabstop=2
  set shiftwidth=2
  set expandtab
- set listchars=eol:⏎,tab:··,trail:~,extends:>,precedes:<
+ set listchars=tab:~~,trail:·,extends:>,precedes:<
  set list
 
  " Backspace
@@ -256,7 +272,10 @@ endfunction
  nnoremap <M-k> :res -20<CR><C-w>k<C-l>
  tnoremap <Esc> <C-\><C-n>
 
- nnoremap <leader>t :botright split <bar> terminal<CR>:set filetype=terminal<cr>a
+au TermEnter * setlocal scrolloff=0
+au TermLeave * setlocal scrolloff=5
+
+ nnoremap <leader>t :setlocal scrolloff=0 <bar> botright split <bar> terminal<CR>:set filetype=terminal<cr>a
 
  " Russian layot
  set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
@@ -565,6 +584,9 @@ nmap <leader>rn <Plug>(coc-rename)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
@@ -622,9 +644,27 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 
-let g:prettier#autoformat = 1
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html,*.svg PrettierAsync
+let g:prettier#autoformat_config_files = ['prettier.config.js']
+let g:prettier#autoformat = 0
+let g:prettier#autoformat_require_pragma = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html,*.svg Prettier
+let g:prettier#autoformat_config_present = 1
 
 nnoremap <leader>z :!tidy -mi -xml -wrap 0 %
 
 set encoding=UTF-8
+
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
+
+
+highlight PmenuSel ctermfg=251 ctermbg=242
+
+au TermEnter * setlocal scrolloff=0
+au TermLeave * setlocal scrolloff=5
+
+" hi IncSearch ctermfg=0 ctermbg=6
+" hi Search ctermfg=0 ctermbg=6
+hi Todo ctermfg=0 ctermbg=8
+
+inoremap <C-c> <Esc><Esc>
+

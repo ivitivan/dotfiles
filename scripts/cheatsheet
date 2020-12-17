@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+CHEATSHEETS="${HOME}/cheatsheets"
+
+RESULT=$(cat CHEATSHEETS | rofi -dmenu -p "cheatsheets: ")
+
+echo $RESULT | xclip -selection clipboard

@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+RECIPES="${HOME}/recipes"
+
+RESULT=$(ls $RECIPES | rofi -dmenu -p "recipes: ")
+
+# urxvt -e source "${HOME}/.zshrc" && nvim "${RECIPES}/${RESULT}"
+urxvt -e source /home/vit/.zshrc && nvim /home/vit/.zshrc

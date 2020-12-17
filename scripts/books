@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+BOOKS="${HOME}/books"
+
+RESULT=$(ls $BOOKS | rofi -dmenu -p "books: ")
+
+if [ -e "${BOOKS}/${RESULT}" ]
+then
+  zathura "${BOOKS}/${RESULT}"
+fi

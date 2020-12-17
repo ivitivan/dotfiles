@@ -1,0 +1,1 @@
+sudo ethtool enp6s0|grep Wake-on

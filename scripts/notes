@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+NOTES="${HOME}/notes"
+
+RESULT=$(ls $NOTES | rofi -dmenu -p "notes: ")
+
+urxvt -e zsh -d -f -c "source ${HOME}/.zshrc && nvim ${NOTES}/${RESULT}"
