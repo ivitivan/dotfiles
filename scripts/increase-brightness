@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
 # Replace /dev/i2c-4 with correct device name if needed
-sudo ddccontrol dev:/dev/i2c-4 -r 0x10 | grep 'Control 0x10'| awk '{print $3}'|awk '{split($0,a,"/"); print a[2]}' | awk '{s=$0+5} END {print "sudo ddccontrol dev:/dev/i2c-4 -r 0x10 -w "s}' | bash # increase screen brightness
+sudo ddccontrol dev:/dev/i2c-7 -r 0x10 | grep 'Control 0x10'| awk '{print $3}'|awk '{split($0,a,"/"); print a[2]}' | awk '{s=$0+5} END {print "sudo ddccontrol dev:/dev/i2c-7 -r 0x10 -w "s}' | bash # increase screen brightness
+# sudo ddccontrol dev:/dev/i2c-4 -r 0x10 | grep 'Control 0x10'| awk '{print $3}'|awk '{split($0,a,"/"); print a[2]}' | awk '{s=$0+5} END {print "sudo ddccontrol dev:/dev/i2c-4 -r 0x10 -w "s}' | bash # increase screen brightness

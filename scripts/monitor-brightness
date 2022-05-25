@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# get list of devices
+# sudo ddccontrol -p | grep Device: | awk '{split($3,a,":"); print a[2]}'
+
+msgTag="mybrightness"
+
+device="/dev/i2c-7"
+DIFF=$1
+COMMAND='{s=$0'
+COMMAND+="$DIFF"
+COMMAND+='} END {print "sudo ddccontrol dev:'
+COMMAND+="$device"
+COMMAND+=' -r 0x10 -w "s}'
+echo $COMMAND
+brightness=$(sudo ddccontrol dev:$device -r 0x10 | grep 'Control 0x10' | awk '{print $3}' | awk '{split($0,a,"/"); print a[2]}')
+echo $brightness
+echo $brightness  | awk "$COMMAND" | bash
+
+firstCharacter=${place:0:1}
+echo $new_brightness
+
+if [ $brightness = "0" ] || [ $brightness = "100" ]; then
+    new_brightness=$brightness
+else
+    new_brightness=`expr $brightness ${DIFF:0:1} ${DIFF:1}`
+fi
+
+dunstify -a "changeBrightness" -u low -i audio-volume-high -h string:x-dunst-stack-tag:$msgTag \
+    -h int:value:"$new_brightness" "🔆 Brightness: ${new_brightness}%"

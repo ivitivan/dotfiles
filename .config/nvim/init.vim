@@ -6,7 +6,7 @@ call plug#begin('~/.config/nvim/plugins')
 Plug 'https://github.com/sheerun/vim-polyglot'
 Plug 'https://github.com/ap/vim-css-color'
 " Plug 'pangloss/vim-javascript'
-Plug 'prettier/vim-prettier', { 'do': 'npm install' }
+" Plug 'prettier/vim-prettier', { 'do': 'npm install' }
 Plug '/usr/bin/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -54,12 +54,7 @@ Plug 'https://github.com/yuttie/comfortable-motion.vim'
 Plug 'https://github.com/neovimhaskell/haskell-vim'
 Plug 'https://github.com/qpkorr/vim-bufkill'
 
-" Install nightly build, replace ./install.sh with install.cmd on windows
-Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
-" Or install latest release tag
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
-" Or build from source code
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Spelling
 Plug 'https://github.com/rhysd/vim-grammarous'
@@ -92,25 +87,73 @@ Plug 'https://github.com/andreasvc/vim-256noir'
 Plug 'lurst/austere.vim'
 Plug 'davidosomething/vim-colors-meh'
 Plug 'andreypopp/vim-colors-plain'
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 Plug 'numtostr/FTerm.nvim'
 
 " Plug 'kyazdani42/nvim-web-devicons'
 " Plug 'romgrk/barbar.nvim'
+Plug 'petertriho/nvim-scrollbar', {'branch': 'main'}
+
+Plug 'kevinhwang91/nvim-hlslens'
+
+Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+
+Plug 'folke/which-key.nvim'
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'lewis6991/gitsigns.nvim'
+
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
+Plug 'kyazdani42/nvim-tree.lua'
+Plug 'edluffy/hologram.nvim'
+Plug 'https://github.com/elkowar/yuck.vim'
+
+Plug 'https://github.com/nvim-telescope/telescope-frecency.nvim'
+Plug 'https://github.com/tami5/sqlite.lua'
+
+Plug 'yegappan/mru'
+Plug 'https://github.com/alan-w-255/telescope-mru.nvim'
+
+Plug 'https://github.com/goolord/alpha-nvim'
+
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'folke/trouble.nvim'
+
+Plug 'lukas-reineke/indent-blankline.nvim'
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'sindrets/diffview.nvim'
+
+Plug 'gelguy/wilder.nvim'
+
+Plug 'ghifarit53/tokyonight-vim'
+
+Plug 'https://github.com/ethanholz/nvim-lastplace'
 
 call plug#end()
+lua << EOF
+  require("which-key").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+
 " fzf
- nnoremap <c-p> :FZF<cr>
- nnoremap <c-n> :Buffers<cr>
- nnoremap <c-h> :History<cr>
+ " nnoremap <c-p> :FZF<cr>
+ " nnoremap <c-n> :Buffers<cr>
 " nnoremap <c-m> :Windows<cr>
+ " nnoremap <c-h> :History<cr>
 
  " Vim-jsx Settings
  let g:jsx_ext_required = 0
 
  " Make paste and copy work
- "set clipboard+=unnamed
+ set clipboard+=unnamed
  set clipboard+=unnamedplus
 
  " Define colorsheme and appearance
@@ -120,7 +163,78 @@ call plug#end()
  set t_Co=256
 
 
-colorscheme plain
+
+lua << EOF
+local catppuccin = require("catppuccin")
+
+-- configure it
+ catppuccin.setup({
+transparent_background = false,
+term_colors = false,
+styles = {
+	comments = "italic",
+	functions = "italic",
+	keywords = "italic",
+	strings = "NONE",
+	variables = "italic",
+},
+integrations = {
+	treesitter = true,
+	native_lsp = {
+		enabled = true,
+		virtual_text = {
+			errors = "italic",
+			hints = "italic",
+			warnings = "italic",
+			information = "italic",
+		},
+		underlines = {
+			errors = "underline",
+			hints = "underline",
+			warnings = "underline",
+			information = "underline",
+		},
+	},
+	lsp_trouble = true,
+	cmp = true,
+	lsp_saga = false,
+	gitgutter = false,
+	gitsigns = true,
+	telescope = true,
+	nvimtree = {
+		enabled = true,
+		show_root = false,
+		transparent_panel = false,
+	},
+	which_key = false,
+	indent_blankline = {
+		enabled = true,
+		colored_indent_levels = false,
+	},
+	dashboard = true,
+	neogit = false,
+	vim_sneak = false,
+	fern = false,
+	barbar = false,
+	bufferline = true,
+	markdown = true,
+	lightspeed = false,
+	ts_rainbow = false,
+	hop = false,
+	notify = true,
+	telekasten = true,
+}
+})
+EOF
+
+set termguicolors
+
+" let g:tokyonight_style = 'night' " available: night, storm
+" let g:tokyonight_enable_italic = 1
+
+" colorscheme tokyonight
+
+colorscheme catppuccin
  " if $BACKGROUND == 'dark'
  "   set background=dark
  "   colorscheme base16-google
@@ -246,7 +360,7 @@ endfunction
  " Remove header in explorer
  let g:netrw_banner=0
 
- cmap w!! w !sudo tee > /dev/null %
+ com -bar W exe 'w !sudo tee >/dev/null %:p:S' | setl nomod
 
  " Find next symbol in this column
  nnoremap <silent> <leader>j :<C-u>call search('\%' . virtcol('.') . 'v\S', 'W')<CR>
@@ -265,7 +379,7 @@ endfunction
  endfunction
 
  " Copy current file name
- nnoremap <leader>cf :let currentFileName = expand('%') <bar> call Copy(currentFileName)<cr>
+ " nnoremap <leader>cf :let currentFileName = expand('%') <bar> call Copy(currentFileName)<cr>
 
  nnoremap <M-j> :res -20<CR><C-w>ja<C-l>
  tnoremap <M-k> <C-\><C-n>:res -20<CR><C-w>k<C-l>
@@ -473,7 +587,7 @@ au TermLeave * setlocal scrolloff=5
    autocmd VimEnter * let &titlestring = "nvim: " . getcwd()
  augroup END
 
- nnoremap <BS> :NERDTreeToggle<cr>
+ nnoremap <leader><BS> :NvimTreeToggle<cr>
 
  " JavaScript
  function! g:Eslint() abort
@@ -562,6 +676,7 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> <leader>gr <Plug>(coc-references)
+nnoremap <silent> <leader>cf :<C-u>CocFix<cr>
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -647,8 +762,8 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 let g:prettier#autoformat_config_files = ['prettier.config.js']
 let g:prettier#autoformat = 0
 let g:prettier#autoformat_require_pragma = 0
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html,*.svg Prettier
 let g:prettier#autoformat_config_present = 1
+let g:prettier#exec_cmd_async = 0
 
 nnoremap <leader>z :!tidy -mi -xml -wrap 0 %
 
@@ -667,4 +782,330 @@ au TermLeave * setlocal scrolloff=5
 hi Todo ctermfg=0 ctermbg=8
 
 inoremap <C-c> <Esc><Esc>
+
+
+lua <<EOF
+require("scrollbar").setup({
+    show = true,
+    handle = {
+        text = " ",
+        color = "white",
+        hide_if_all_visible = true, -- Hides handle if all lines are visible
+    },
+    marks = {
+        Search = { text = { "-", "=" }, priority = 0, color = "orange" },
+        Error = { text = { "-", "=" }, priority = 1, color = "red" },
+        Warn = { text = { "-", "=" }, priority = 2, color = "yellow" },
+        Info = { text = { "-", "=" }, priority = 3, color = "blue" },
+        Hint = { text = { "-", "=" }, priority = 4, color = "green" },
+        Misc = { text = { "-", "=" }, priority = 5, color = "purple" },
+    },
+    excluded_filetypes = {
+        "",
+        "prompt",
+        "TelescopePrompt",
+    },
+    autocmd = {
+        render = {
+            "BufWinEnter",
+            "TabEnter",
+            "TermEnter",
+            "WinEnter",
+            "CmdwinLeave",
+            "TextChanged",
+            "VimResized",
+            "WinScrolled",
+        },
+    },
+    handlers = {
+        diagnostic = true,
+        search = true,
+    },
+})
+EOF
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all"
+  ensure_installed = { "c", "lua", "rust", "typescript" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  highlight = {
+    -- `false` will disable the whole extension
+    enable = true,
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+
+" Find files using Telescope command-line sugar.
+nnoremap <c-p> <cmd>Telescope find_files<cr>
+nnoremap <c-h> <cmd>Telescope mru<cr>
+nnoremap <c-g> <cmd>Telescope live_grep<cr>
+nnoremap <c-n> <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+lua <<EOF
+require('gitsigns').setup()
+EOF
+
+lua <<EOF
+require'nvim-tree'.setup {
+  disable_netrw        = true,
+  hijack_netrw         = true,
+  open_on_setup        = false,
+  ignore_ft_on_setup   = {},
+  auto_reload_on_write = true,
+  open_on_tab          = false,
+  hijack_cursor        = false,
+  update_cwd           = false,
+  update_to_buf_dir    = {
+    enable = true,
+    auto_open = true,
+  },
+  diagnostics = {
+    enable = false,
+    icons = {
+      hint = "",
+      info = "",
+      warning = "",
+      error = "",
+    }
+  },
+  update_focused_file = {
+    enable      = false,
+    update_cwd  = false,
+    ignore_list = {}
+  },
+  system_open = {
+    cmd  = nil,
+    args = {}
+  },
+  filters = {
+    dotfiles = false,
+    custom = {}
+  },
+  git = {
+    enable = true,
+    ignore = true,
+    timeout = 500,
+  },
+  view = {
+    width = 30,
+    height = 30,
+    hide_root_folder = false,
+    side = 'left',
+    auto_resize = false,
+    mappings = {
+      custom_only = false,
+      list = {}
+    },
+    number = false,
+    relativenumber = false,
+    signcolumn = "yes"
+  },
+  trash = {
+    cmd = "trash",
+    require_confirm = true
+  },
+  actions = {
+    change_dir = {
+      global = false,
+    },
+    open_file = {
+      quit_on_open = false,
+    }
+  }
+}
+EOF
+
+
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html,*.svg Prettier
+
+lua <<EOF
+require('telescope').setup{
+  defaults = {
+    mappings = {
+      i = {
+        ['<C-u>'] = false,
+      }
+    }
+  },
+  extensions = {
+    frecency = {
+      db_root = "home/vit/.local/share/nvim/",
+      show_scores = false,
+      show_unindexed = true,
+      ignore_patterns = {"*.git/*", "*/tmp/*"},
+      disable_devicons = false,
+      workspaces = {
+        ["conf"]    = "/home/vit/.config",
+        ["data"]    = "/home/vit/.local/share",
+        ["project"] = "/home/vit/projects",
+        ["wiki"]    = "/home/vit/wiki"
+      }
+    }
+  },
+}
+EOF
+
+silent execute "!~/scripts/set-window-title " . $PWD
+
+lua <<EOF
+require("telescope").load_extension("mru")
+EOF
+
+lua <<EOF
+require("alpha")
+EOF
+
+
+nnoremap <silent> <c-w>f :let mycurf=expand("<cfile>")<cr><c-w>p:execute("e ".mycurf)<cr> 
+
+lua << EOF
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+
+nnoremap <leader>xx <cmd>TroubleToggle<cr>
+nnoremap <leader>xw <cmd>TroubleToggle workspace_diagnostics<cr>
+nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
+nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>xl <cmd>TroubleToggle loclist<cr>
+" nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+
+lua <<EOF
+  require("indent_blankline").setup {
+      -- for example, context is off by default, use this to turn it on
+      show_current_context = false,
+      show_current_context_start = false,
+  }
+EOF
+
+call wilder#setup({'modes': [':', '/', '?']})
+
+lua <<EOF
+-- Lua
+local cb = require'diffview.config'.diffview_callback
+
+require'diffview'.setup {
+  diff_binaries = false,    -- Show diffs for binaries
+  enhanced_diff_hl = true, -- See ':h diffview-config-enhanced_diff_hl'
+  use_icons = true,         -- Requires nvim-web-devicons
+  icons = {                 -- Only applies when use_icons is true.
+    folder_closed = "",
+    folder_open = "",
+  },
+  signs = {
+    fold_closed = "",
+    fold_open = "",
+  },
+  file_panel = {
+    listing_style = "tree",             -- One of 'list' or 'tree'
+    tree_options = {                    -- Only applies when listing_style is 'tree'
+      flatten_dirs = true,              -- Flatten dirs that only contain one single dir
+      folder_statuses = "only_folded",  -- One of 'never', 'only_folded' or 'always'.
+    },
+  },
+  file_history_panel = {
+    log_options = {
+      max_count = 256,      -- Limit the number of commits
+      follow = false,       -- Follow renames (only for single file)
+      all = false,          -- Include all refs under 'refs/' including HEAD
+      merges = false,       -- List only merge commits
+      no_merges = false,    -- List no merge commits
+      reverse = false,      -- List commits in reverse order
+    },
+  },
+  default_args = {    -- Default args prepended to the arg-list for the listed commands
+    DiffviewOpen = {},
+    DiffviewFileHistory = {},
+  },
+  hooks = {},         -- See ':h diffview-config-hooks'
+  key_bindings = {
+    disable_defaults = false,                   -- Disable the default key bindings
+    -- The `view` bindings are active in the diff buffers, only when the current
+    -- tabpage is a Diffview.
+    view = {
+      ["<tab>"]      = cb("select_next_entry"),  -- Open the diff for the next file
+      ["<s-tab>"]    = cb("select_prev_entry"),  -- Open the diff for the previous file
+      ["gf"]         = cb("goto_file"),          -- Open the file in a new split in previous tabpage
+      ["<C-w><C-f>"] = cb("goto_file_split"),    -- Open the file in a new split
+      ["<C-w>gf"]    = cb("goto_file_tab"),      -- Open the file in a new tabpage
+      ["<leader>e"]  = cb("focus_files"),        -- Bring focus to the files panel
+      ["<leader>b"]  = cb("toggle_files"),       -- Toggle the files panel.
+    },
+    file_panel = {
+      ["j"]             = cb("next_entry"),           -- Bring the cursor to the next file entry
+      ["<down>"]        = cb("next_entry"),
+      ["k"]             = cb("prev_entry"),           -- Bring the cursor to the previous file entry.
+      ["<up>"]          = cb("prev_entry"),
+      ["<cr>"]          = cb("select_entry"),         -- Open the diff for the selected entry.
+      ["o"]             = cb("select_entry"),
+      ["<2-LeftMouse>"] = cb("select_entry"),
+      ["-"]             = cb("toggle_stage_entry"),   -- Stage / unstage the selected entry.
+      ["S"]             = cb("stage_all"),            -- Stage all entries.
+      ["U"]             = cb("unstage_all"),          -- Unstage all entries.
+      ["X"]             = cb("restore_entry"),        -- Restore entry to the state on the left side.
+      ["R"]             = cb("refresh_files"),        -- Update stats and entries in the file list.
+      ["<tab>"]         = cb("select_next_entry"),
+      ["<s-tab>"]       = cb("select_prev_entry"),
+      ["gf"]            = cb("goto_file"),
+      ["<C-w><C-f>"]    = cb("goto_file_split"),
+      ["<C-w>gf"]       = cb("goto_file_tab"),
+      ["i"]             = cb("listing_style"),        -- Toggle between 'list' and 'tree' views
+      ["f"]             = cb("toggle_flatten_dirs"),  -- Flatten empty subdirectories in tree listing style.
+      ["<leader>e"]     = cb("focus_files"),
+      ["<leader>b"]     = cb("toggle_files"),
+    },
+    file_history_panel = {
+      ["g!"]            = cb("options"),            -- Open the option panel
+      ["<C-A-d>"]       = cb("open_in_diffview"),   -- Open the entry under the cursor in a diffview
+      ["y"]             = cb("copy_hash"),          -- Copy the commit hash of the entry under the cursor
+      ["zR"]            = cb("open_all_folds"),
+      ["zM"]            = cb("close_all_folds"),
+      ["j"]             = cb("next_entry"),
+      ["<down>"]        = cb("next_entry"),
+      ["k"]             = cb("prev_entry"),
+      ["<up>"]          = cb("prev_entry"),
+      ["<cr>"]          = cb("select_entry"),
+      ["o"]             = cb("select_entry"),
+      ["<2-LeftMouse>"] = cb("select_entry"),
+      ["<tab>"]         = cb("select_next_entry"),
+      ["<s-tab>"]       = cb("select_prev_entry"),
+      ["gf"]            = cb("goto_file"),
+      ["<C-w><C-f>"]    = cb("goto_file_split"),
+      ["<C-w>gf"]       = cb("goto_file_tab"),
+      ["<leader>e"]     = cb("focus_files"),
+      ["<leader>b"]     = cb("toggle_files"),
+    },
+    option_panel = {
+      ["<tab>"] = cb("select"),
+      ["q"]     = cb("close"),
+    },
+  },
+}
+EOF
+
+
+command! DiffInline vsp | exe 'term git diff | delta' | startinsert
+
+command! DiffInlineFile vsp | exe 'term git diff -- '
+            \ . shellescape(expand("%")) . ' | delta' | startinsert
+
+lua <<EOF
+require'nvim-lastplace'.setup{}
+EOF
 
