@@ -1,6 +1,5 @@
 {
   "diagnostic.refreshOnInsertMode": true,
-  "diagnostic.signOffset": 9999999,
   "languageserver": {
     "haskell": {
       "command": "hie-wrapper",
@@ -11,6 +10,12 @@
           "hlintOn": true
         }
       }
+    },
+    "elmLS": {
+      "command": "elm-language-server",
+      "filetypes": ["elm"],
+      "rootPatterns": ["elm.json"]
     }
-  }
+  },
+  "coc.preferences.formatOnSaveFiletypes": ["typescript.tsx","typescript", "javascript", "javascript.jsx", "typescriptreact", "css", "markdown"],
 }

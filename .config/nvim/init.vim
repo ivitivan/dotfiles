@@ -128,11 +128,19 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'sindrets/diffview.nvim'
 
-Plug 'gelguy/wilder.nvim'
+function! UpdateRemotePlugins(...)
+  " Needed to refresh runtime files
+  let &rtp=&rtp
+  UpdateRemotePlugins
+endfunction
+
+Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
 
 Plug 'ghifarit53/tokyonight-vim'
 
 Plug 'https://github.com/ethanholz/nvim-lastplace'
+
+Plug 'akinsho/toggleterm.nvim', {'tag' : 'v1.*'}
 
 call plug#end()
 lua << EOF
@@ -445,7 +453,7 @@ au TermLeave * setlocal scrolloff=5
 
  set mouse=a
 
- nnoremap <leader>a :e %:h/
+ " nnoremap <leader>a :e %:h/
  nnoremap <leader>r :%s/<c-r><c-w>//g<left><left>
 
  function! g:Open_term_in_cur_dir() abort
@@ -516,9 +524,9 @@ au TermLeave * setlocal scrolloff=5
  let g:javascript_conceal_underscore_arrow_function = "🞅"
 
  " typescript.tsx
- highlight tsxCloseString ctermfg=4
- highlight htmlTag ctermfg=4
- highlight htmlTagName ctermfg=4
+ " highlight tsxCloseString ctermfg=4
+ " highlight htmlTag ctermfg=4
+ " highlight htmlTagName ctermfg=4
 
  " set wildcharm=<C-z>
  " nnoremap ,e :e **/*<C-z><S-Tab>
@@ -676,7 +684,9 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> <leader>gr <Plug>(coc-references)
-nnoremap <silent> <leader>cf :<C-u>CocFix<cr>
+
+xnoremap <leader>a  <Plug>(coc-codeaction-selected)<CR>
+nnoremap <leader>a  <Plug>(coc-codeaction-selected)<CR>
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -709,10 +719,6 @@ augroup mygroup
   " Update signature help on jump placeholder
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
 
 " Remap for do codeAction of current line
 nmap <leader>ac  <Plug>(coc-codeaction)
@@ -759,17 +765,11 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 
-let g:prettier#autoformat_config_files = ['prettier.config.js']
-let g:prettier#autoformat = 0
-let g:prettier#autoformat_require_pragma = 0
-let g:prettier#autoformat_config_present = 1
-let g:prettier#exec_cmd_async = 0
-
 nnoremap <leader>z :!tidy -mi -xml -wrap 0 %
 
 set encoding=UTF-8
 
-autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
+" autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
 
 
 highlight PmenuSel ctermfg=251 ctermbg=242
@@ -965,7 +965,7 @@ require("telescope").load_extension("mru")
 EOF
 
 lua <<EOF
-require("alpha")
+require'alpha'.setup(require'alpha.themes.startify'.config)
 EOF
 
 
@@ -1109,3 +1109,8 @@ lua <<EOF
 require'nvim-lastplace'.setup{}
 EOF
 
+lua <<EOF
+require("toggleterm").setup{
+  open_mapping = [[<c-\>]],
+}
+EOF
