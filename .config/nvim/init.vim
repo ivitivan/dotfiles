@@ -142,6 +142,10 @@ Plug 'https://github.com/ethanholz/nvim-lastplace'
 
 Plug 'akinsho/toggleterm.nvim', {'tag' : 'v1.*'}
 
+Plug 'nvim-lualine/lualine.nvim'
+
+Plug 'https://gitlab.com/yorickpeterse/nvim-window'
+
 call plug#end()
 lua << EOF
   require("which-key").setup {
@@ -172,66 +176,99 @@ EOF
 
 
 
-lua << EOF
-local catppuccin = require("catppuccin")
+let g:catppuccin_flavour = "mocha" " latte, frappe, macchiato, mocha
 
--- configure it
- catppuccin.setup({
-transparent_background = false,
-term_colors = false,
-styles = {
-	comments = "italic",
-	functions = "italic",
-	keywords = "italic",
-	strings = "NONE",
-	variables = "italic",
-},
-integrations = {
-	treesitter = true,
-	native_lsp = {
-		enabled = true,
-		virtual_text = {
-			errors = "italic",
-			hints = "italic",
-			warnings = "italic",
-			information = "italic",
+lua << EOF
+require("catppuccin").setup({
+	dim_inactive = {
+		enabled = false,
+		shade = "dark",
+		percentage = 0.15,
+	},
+	transparent_background = false,
+	term_colors = false,
+	compile = {
+		enabled = false,
+		path = vim.fn.stdpath "cache" .. "/catppuccin",
+	},
+	styles = {
+		comments = { "italic" },
+		conditionals = { "italic" },
+		loops = {},
+		functions = {},
+		keywords = {},
+		strings = {},
+		variables = {},
+		numbers = {},
+		booleans = {},
+		properties = {},
+		types = {},
+		operators = {},
+	},
+	integrations = {
+		treesitter = true,
+		native_lsp = {
+			enabled = true,
+			virtual_text = {
+				errors = { "italic" },
+				hints = { "italic" },
+				warnings = { "italic" },
+				information = { "italic" },
+			},
+			underlines = {
+				errors = { "underline" },
+				hints = { "underline" },
+				warnings = { "underline" },
+				information = { "underline" },
+			},
 		},
-		underlines = {
-			errors = "underline",
-			hints = "underline",
-			warnings = "underline",
-			information = "underline",
+		coc_nvim = false,
+		lsp_trouble = false,
+		cmp = true,
+		lsp_saga = false,
+		gitgutter = false,
+		gitsigns = true,
+		leap = false,
+		telescope = true,
+		nvimtree = {
+			enabled = true,
+			show_root = true,
+			transparent_panel = false,
 		},
+		neotree = {
+			enabled = false,
+			show_root = true,
+			transparent_panel = false,
+		},
+		dap = {
+			enabled = false,
+			enable_ui = false,
+		},
+		which_key = false,
+		indent_blankline = {
+			enabled = true,
+			colored_indent_levels = false,
+		},
+		dashboard = true,
+		neogit = false,
+		vim_sneak = false,
+		fern = false,
+		barbar = false,
+		bufferline = true,
+		markdown = true,
+		lightspeed = false,
+		ts_rainbow = false,
+		hop = false,
+		notify = true,
+		telekasten = true,
+		symbols_outline = true,
+		mini = false,
+		aerial = false,
+		vimwiki = true,
+		beacon = true,
 	},
-	lsp_trouble = true,
-	cmp = true,
-	lsp_saga = false,
-	gitgutter = false,
-	gitsigns = true,
-	telescope = true,
-	nvimtree = {
-		enabled = true,
-		show_root = false,
-		transparent_panel = false,
-	},
-	which_key = false,
-	indent_blankline = {
-		enabled = true,
-		colored_indent_levels = false,
-	},
-	dashboard = true,
-	neogit = false,
-	vim_sneak = false,
-	fern = false,
-	barbar = false,
-	bufferline = true,
-	markdown = true,
-	lightspeed = false,
-	ts_rainbow = false,
-	hop = false,
-	notify = true,
-	telekasten = true,
-}
+	color_overrides = {},
+	custom_highlights = {},
 })
 EOF
 
@@ -387,7 +424,7 @@ endfunction
  endfunction
 
  " Copy current file name
- " nnoremap <leader>cf :let currentFileName = expand('%') <bar> call Copy(currentFileName)<cr>
+ nnoremap <leader>cf :let currentFileName = expand('%') <bar> call Copy(currentFileName)<cr>
 
  nnoremap <M-j> :res -20<CR><C-w>ja<C-l>
  tnoremap <M-k> <C-\><C-n>:res -20<CR><C-w>k<C-l>
@@ -397,7 +434,7 @@ endfunction
 au TermEnter * setlocal scrolloff=0
 au TermLeave * setlocal scrolloff=5
 
- nnoremap <leader>t :setlocal scrolloff=0 <bar> botright split <bar> terminal<CR>:set filetype=terminal<cr>a
+ " nnoremap <leader>t :setlocal scrolloff=0 <bar> botright split <bar> terminal<CR>:set filetype=terminal<cr>a
 
  " Russian layot
  set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
@@ -857,73 +894,7 @@ require('gitsigns').setup()
 EOF
 
 lua <<EOF
-require'nvim-tree'.setup {
-  disable_netrw        = true,
-  hijack_netrw         = true,
-  open_on_setup        = false,
-  ignore_ft_on_setup   = {},
-  auto_reload_on_write = true,
-  open_on_tab          = false,
-  hijack_cursor        = false,
-  update_cwd           = false,
-  update_to_buf_dir    = {
-    enable = true,
-    auto_open = true,
-  },
-  diagnostics = {
-    enable = false,
-    icons = {
-      hint = "",
-      info = "",
-      warning = "",
-      error = "",
-    }
-  },
-  update_focused_file = {
-    enable      = false,
-    update_cwd  = false,
-    ignore_list = {}
-  },
-  system_open = {
-    cmd  = nil,
-    args = {}
-  },
-  filters = {
-    dotfiles = false,
-    custom = {}
-  },
-  git = {
-    enable = true,
-    ignore = true,
-    timeout = 500,
-  },
-  view = {
-    width = 30,
-    height = 30,
-    hide_root_folder = false,
-    side = 'left',
-    auto_resize = false,
-    mappings = {
-      custom_only = false,
-      list = {}
-    },
-    number = false,
-    relativenumber = false,
-    signcolumn = "yes"
-  },
-  trash = {
-    cmd = "trash",
-    require_confirm = true
-  },
-  actions = {
-    change_dir = {
-      global = false,
-    },
-    open_file = {
-      quit_on_open = false,
-    }
-  }
-}
+require("nvim-tree").setup()
 EOF
 
 
@@ -998,11 +969,12 @@ call wilder#setup({'modes': [':', '/', '?']})
 
 lua <<EOF
 -- Lua
-local cb = require'diffview.config'.diffview_callback
+local actions = require("diffview.actions")
 
-require'diffview'.setup {
+require("diffview").setup({
   diff_binaries = false,    -- Show diffs for binaries
-  enhanced_diff_hl = true, -- See ':h diffview-config-enhanced_diff_hl'
+  enhanced_diff_hl = false, -- See ':h diffview-config-enhanced_diff_hl'
+  git_cmd = { "git" },      -- The git executable followed by default args.
   use_icons = true,         -- Requires nvim-web-devicons
   icons = {                 -- Only applies when use_icons is true.
     folder_closed = "",
@@ -1018,85 +990,102 @@ require'diffview'.setup {
       flatten_dirs = true,              -- Flatten dirs that only contain one single dir
       folder_statuses = "only_folded",  -- One of 'never', 'only_folded' or 'always'.
     },
+    win_config = {                      -- See ':h diffview-config-win_config'
+      position = "left",
+      width = 35,
+    },
   },
   file_history_panel = {
-    log_options = {
-      max_count = 256,      -- Limit the number of commits
-      follow = false,       -- Follow renames (only for single file)
-      all = false,          -- Include all refs under 'refs/' including HEAD
-      merges = false,       -- List only merge commits
-      no_merges = false,    -- List no merge commits
-      reverse = false,      -- List commits in reverse order
+    log_options = {   -- See ':h diffview-config-log_options'
+      single_file = {
+        diff_merges = "combined",
+      },
+      multi_file = {
+        diff_merges = "first-parent",
+      },
     },
+    win_config = {    -- See ':h diffview-config-win_config'
+      position = "bottom",
+      height = 16,
+    },
+  },
+  commit_log_panel = {
+    win_config = {},  -- See ':h diffview-config-win_config'
   },
   default_args = {    -- Default args prepended to the arg-list for the listed commands
     DiffviewOpen = {},
     DiffviewFileHistory = {},
   },
   hooks = {},         -- See ':h diffview-config-hooks'
-  key_bindings = {
-    disable_defaults = false,                   -- Disable the default key bindings
-    -- The `view` bindings are active in the diff buffers, only when the current
-    -- tabpage is a Diffview.
+  keymaps = {
+    disable_defaults = false, -- Disable the default keymaps
     view = {
-      ["<tab>"]      = cb("select_next_entry"),  -- Open the diff for the next file
-      ["<s-tab>"]    = cb("select_prev_entry"),  -- Open the diff for the previous file
-      ["gf"]         = cb("goto_file"),          -- Open the file in a new split in previous tabpage
-      ["<C-w><C-f>"] = cb("goto_file_split"),    -- Open the file in a new split
-      ["<C-w>gf"]    = cb("goto_file_tab"),      -- Open the file in a new tabpage
-      ["<leader>e"]  = cb("focus_files"),        -- Bring focus to the files panel
-      ["<leader>b"]  = cb("toggle_files"),       -- Toggle the files panel.
+      -- The `view` bindings are active in the diff buffers, only when the current
+      -- tabpage is a Diffview.
+      ["<tab>"]      = actions.select_next_entry, -- Open the diff for the next file
+      ["<s-tab>"]    = actions.select_prev_entry, -- Open the diff for the previous file
+      ["gf"]         = actions.goto_file,         -- Open the file in a new split in the previous tabpage
+      ["<C-w><C-f>"] = actions.goto_file_split,   -- Open the file in a new split
+      ["<C-w>gf"]    = actions.goto_file_tab,     -- Open the file in a new tabpage
+      ["<leader>e"]  = actions.focus_files,       -- Bring focus to the files panel
+      ["<leader>b"]  = actions.toggle_files,      -- Toggle the files panel.
     },
     file_panel = {
-      ["j"]             = cb("next_entry"),           -- Bring the cursor to the next file entry
-      ["<down>"]        = cb("next_entry"),
-      ["k"]             = cb("prev_entry"),           -- Bring the cursor to the previous file entry.
-      ["<up>"]          = cb("prev_entry"),
-      ["<cr>"]          = cb("select_entry"),         -- Open the diff for the selected entry.
-      ["o"]             = cb("select_entry"),
-      ["<2-LeftMouse>"] = cb("select_entry"),
-      ["-"]             = cb("toggle_stage_entry"),   -- Stage / unstage the selected entry.
-      ["S"]             = cb("stage_all"),            -- Stage all entries.
-      ["U"]             = cb("unstage_all"),          -- Unstage all entries.
-      ["X"]             = cb("restore_entry"),        -- Restore entry to the state on the left side.
-      ["R"]             = cb("refresh_files"),        -- Update stats and entries in the file list.
-      ["<tab>"]         = cb("select_next_entry"),
-      ["<s-tab>"]       = cb("select_prev_entry"),
-      ["gf"]            = cb("goto_file"),
-      ["<C-w><C-f>"]    = cb("goto_file_split"),
-      ["<C-w>gf"]       = cb("goto_file_tab"),
-      ["i"]             = cb("listing_style"),        -- Toggle between 'list' and 'tree' views
-      ["f"]             = cb("toggle_flatten_dirs"),  -- Flatten empty subdirectories in tree listing style.
-      ["<leader>e"]     = cb("focus_files"),
-      ["<leader>b"]     = cb("toggle_files"),
+      ["j"]             = actions.next_entry,         -- Bring the cursor to the next file entry
+      ["<down>"]        = actions.next_entry,
+      ["k"]             = actions.prev_entry,         -- Bring the cursor to the previous file entry.
+      ["<up>"]          = actions.prev_entry,
+      ["<cr>"]          = actions.select_entry,       -- Open the diff for the selected entry.
+      ["o"]             = actions.select_entry,
+      ["<2-LeftMouse>"] = actions.select_entry,
+      ["-"]             = actions.toggle_stage_entry, -- Stage / unstage the selected entry.
+      ["S"]             = actions.stage_all,          -- Stage all entries.
+      ["U"]             = actions.unstage_all,        -- Unstage all entries.
+      ["X"]             = actions.restore_entry,      -- Restore entry to the state on the left side.
+      ["R"]             = actions.refresh_files,      -- Update stats and entries in the file list.
+      ["L"]             = actions.open_commit_log,    -- Open the commit log panel.
+      ["<c-b>"]         = actions.scroll_view(-0.25), -- Scroll the view up
+      ["<c-f>"]         = actions.scroll_view(0.25),  -- Scroll the view down
+      ["<tab>"]         = actions.select_next_entry,
+      ["<s-tab>"]       = actions.select_prev_entry,
+      ["gf"]            = actions.goto_file,
+      ["<C-w><C-f>"]    = actions.goto_file_split,
+      ["<C-w>gf"]       = actions.goto_file_tab,
+      ["i"]             = actions.listing_style,        -- Toggle between 'list' and 'tree' views
+      ["f"]             = actions.toggle_flatten_dirs,  -- Flatten empty subdirectories in tree listing style.
+      ["<leader>e"]     = actions.focus_files,
+      ["<leader>b"]     = actions.toggle_files,
     },
     file_history_panel = {
-      ["g!"]            = cb("options"),            -- Open the option panel
-      ["<C-A-d>"]       = cb("open_in_diffview"),   -- Open the entry under the cursor in a diffview
-      ["y"]             = cb("copy_hash"),          -- Copy the commit hash of the entry under the cursor
-      ["zR"]            = cb("open_all_folds"),
-      ["zM"]            = cb("close_all_folds"),
-      ["j"]             = cb("next_entry"),
-      ["<down>"]        = cb("next_entry"),
-      ["k"]             = cb("prev_entry"),
-      ["<up>"]          = cb("prev_entry"),
-      ["<cr>"]          = cb("select_entry"),
-      ["o"]             = cb("select_entry"),
-      ["<2-LeftMouse>"] = cb("select_entry"),
-      ["<tab>"]         = cb("select_next_entry"),
-      ["<s-tab>"]       = cb("select_prev_entry"),
-      ["gf"]            = cb("goto_file"),
-      ["<C-w><C-f>"]    = cb("goto_file_split"),
-      ["<C-w>gf"]       = cb("goto_file_tab"),
-      ["<leader>e"]     = cb("focus_files"),
-      ["<leader>b"]     = cb("toggle_files"),
+      ["g!"]            = actions.options,          -- Open the option panel
+      ["<C-A-d>"]       = actions.open_in_diffview, -- Open the entry under the cursor in a diffview
+      ["y"]             = actions.copy_hash,        -- Copy the commit hash of the entry under the cursor
+      ["L"]             = actions.open_commit_log,
+      ["zR"]            = actions.open_all_folds,
+      ["zM"]            = actions.close_all_folds,
+      ["j"]             = actions.next_entry,
+      ["<down>"]        = actions.next_entry,
+      ["k"]             = actions.prev_entry,
+      ["<up>"]          = actions.prev_entry,
+      ["<cr>"]          = actions.select_entry,
+      ["o"]             = actions.select_entry,
+      ["<2-LeftMouse>"] = actions.select_entry,
+      ["<c-b>"]         = actions.scroll_view(-0.25),
+      ["<c-f>"]         = actions.scroll_view(0.25),
+      ["<tab>"]         = actions.select_next_entry,
+      ["<s-tab>"]       = actions.select_prev_entry,
+      ["gf"]            = actions.goto_file,
+      ["<C-w><C-f>"]    = actions.goto_file_split,
+      ["<C-w>gf"]       = actions.goto_file_tab,
+      ["<leader>e"]     = actions.focus_files,
+      ["<leader>b"]     = actions.toggle_files,
     },
     option_panel = {
-      ["<tab>"] = cb("select"),
-      ["q"]     = cb("close"),
+      ["<tab>"] = actions.select_entry,
+      ["q"]     = actions.close,
     },
   },
-}
+})
 EOF
 
 
@@ -1114,3 +1103,42 @@ require("toggleterm").setup{
   open_mapping = [[<c-\>]],
 }
 EOF
+
+lua << END
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {},
+    always_divide_middle = true,
+    globalstatus = false,
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {
+      {
+      'filename',
+      path = 1
+      }
+    },
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  extensions = {}
+}
+END
+
+map <silent> <leader>w :lua require('nvim-window').pick()<CR>
