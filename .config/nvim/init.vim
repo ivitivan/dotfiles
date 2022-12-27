@@ -12,7 +12,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 " Plug 'https://github.com/marijnh/tern_for_vim'
 " Plug 'honza/vim-snippets'
-Plug 'https://github.com/scrooloose/nerdcommenter'
+" Plug 'https://github.com/scrooloose/nerdcommenter'
+Plug 'https://github.com/numToStr/Comment.nvim'
 " Plug 'https://github.com/mxw/vim-jsx'
 
 " Typescript highlighter
@@ -49,7 +50,7 @@ Plug 'https://github.com/lambdalisue/vim-rplugin'
 Plug 'https://github.com/bradford-smith94/quick-scope'
 Plug 'https://github.com/machakann/vim-highlightedyank'
 Plug 'https://github.com/vim-scripts/ReplaceWithRegister'
-Plug 'https://github.com/yuttie/comfortable-motion.vim'
+" Plug 'https://github.com/yuttie/comfortable-motion.vim'
 " Plug 'https://github.com/moll/vim-node'
 Plug 'https://github.com/neovimhaskell/haskell-vim'
 Plug 'https://github.com/qpkorr/vim-bufkill'
@@ -102,9 +103,10 @@ Plug 'catppuccin/nvim', {'as': 'catppuccin'}
 Plug 'folke/which-key.nvim'
 
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
-Plug 'nvim-lua/plenary.nvim'
+Plug 'sindrets/diffview.nvim'
+
 Plug 'lewis6991/gitsigns.nvim'
 
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
@@ -120,13 +122,9 @@ Plug 'https://github.com/alan-w-255/telescope-mru.nvim'
 
 Plug 'https://github.com/goolord/alpha-nvim'
 
-Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
 
 Plug 'lukas-reineke/indent-blankline.nvim'
-
-Plug 'nvim-lua/plenary.nvim'
-Plug 'sindrets/diffview.nvim'
 
 function! UpdateRemotePlugins(...)
   " Needed to refresh runtime files
@@ -140,11 +138,17 @@ Plug 'ghifarit53/tokyonight-vim'
 
 Plug 'https://github.com/ethanholz/nvim-lastplace'
 
-Plug 'akinsho/toggleterm.nvim', {'tag' : 'v1.*'}
+Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
 
 Plug 'nvim-lualine/lualine.nvim'
 
 Plug 'https://gitlab.com/yorickpeterse/nvim-window'
+
+Plug 'gennaro-tedesco/nvim-peekup'
+
+Plug 'https://github.com/luukvbaal/stabilize.nvim'
+
+Plug 'https://github.com/tamton-aquib/duck.nvim'
 
 call plug#end()
 lua << EOF
@@ -222,7 +226,7 @@ require("catppuccin").setup({
 				information = { "underline" },
 			},
 		},
-		coc_nvim = false,
+		coc_nvim = true,
 		lsp_trouble = false,
 		cmp = true,
 		lsp_saga = false,
@@ -675,131 +679,167 @@ au TermLeave * setlocal scrolloff=5
 
  inoreabbrev REact React
 
-
+ 
+" May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
+" utf-8 byte sequence
+set encoding=utf-8
 " Some servers have issues with backup files, see #649
 set nobackup
 set nowritebackup
 
-" Better display for messages
-set cmdheight=1
-
-" Smaller updatetime for CursorHold & CursorHoldI
+" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+" delays and poor user experience
 set updatetime=300
 
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved
+set signcolumn=yes
 
-" always show signcolumns
-" set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+" Use <c-space> to trigger completion
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" Use `[c` and `]c` to navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
+" GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> <leader>gr <Plug>(coc-references)
 
-xnoremap <leader>a  <Plug>(coc-codeaction-selected)<CR>
-nnoremap <leader>a  <Plug>(coc-codeaction-selected)<CR>
-
 " Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> K :call ShowDocumentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
   else
-    call CocAction('doHover')
+    call feedkeys('K', 'in')
   endif
 endfunction
 
-" Highlight symbol under cursor on CursorHold
+" Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" Remap for rename current word
+" Symbol renaming
 nmap <leader>rn <Plug>(coc-rename)
 
-" Remap for format selected region
+" Formatting selected code
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
 augroup mygroup
   autocmd!
-  " Setup formatexpr specified filetype(s).
+  " Setup formatexpr specified filetype(s)
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
+" Applying code actions to the selected code block
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying code actions at the cursor position
+nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+" Remap keys for apply code actions affect whole buffer
+nmap <leader>as  <Plug>(coc-codeaction-source)
+" Apply the most preferred quickfix action to fix diagnostic on the current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
+" Remap keys for applying refactor code actions
+nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
 
-" Use `:Fold` to fold current buffer
+" Run the Code Lens action on the current line
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> to scroll float windows/popups
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Use CTRL-S for selections ranges
+" Requires 'textDocument/selectionRange' support of language server
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
+" Add `:OR` command for organize imports of the current buffer
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 
-" Add diagnostic info for https://github.com/itchyny/lightline.vim
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'cocstatus': 'coc#status'
-      \ },
-      \ }
+" Add (Neo)Vim's native statusline support
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-
-
-" Using CocList
+" Mappings for CoCList
 " Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
 " Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
 " Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 
 nnoremap <leader>z :!tidy -mi -xml -wrap 0 %
@@ -884,6 +924,7 @@ EOF
 
 " Find files using Telescope command-line sugar.
 nnoremap <c-p> <cmd>Telescope find_files<cr>
+nnoremap <c-m> <cmd>Telescope resume<cr>
 nnoremap <c-h> <cmd>Telescope mru<cr>
 nnoremap <c-g> <cmd>Telescope live_grep<cr>
 nnoremap <c-n> <cmd>Telescope buffers<cr>
@@ -894,6 +935,10 @@ require('gitsigns').setup()
 EOF
 
 lua <<EOF
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- empty setup using defaults
 require("nvim-tree").setup()
 EOF
 
@@ -973,9 +1018,10 @@ local actions = require("diffview.actions")
 
 require("diffview").setup({
   diff_binaries = false,    -- Show diffs for binaries
-  enhanced_diff_hl = false, -- See ':h diffview-config-enhanced_diff_hl'
+  enhanced_diff_hl = true, -- See ':h diffview-config-enhanced_diff_hl'
   git_cmd = { "git" },      -- The git executable followed by default args.
   use_icons = true,         -- Requires nvim-web-devicons
+  watch_index = true,       -- Update views and index buffers when the git index changes.
   icons = {                 -- Only applies when use_icons is true.
     folder_closed = "",
     folder_open = "",
@@ -983,6 +1029,32 @@ require("diffview").setup({
   signs = {
     fold_closed = "",
     fold_open = "",
+    done = "✓",
+  },
+  view = {
+    -- Configure the layout and behavior of different types of views.
+    -- Available layouts: 
+    --  'diff1_plain'
+    --    |'diff2_horizontal'
+    --    |'diff2_vertical'
+    --    |'diff3_horizontal'
+    --    |'diff3_vertical'
+    --    |'diff3_mixed'
+    --    |'diff4_mixed'
+    -- For more info, see ':h diffview-config-view.x.layout'.
+    default = {
+      -- Config for changed files, and staged files in diff views.
+      layout = "diff2_horizontal",
+    },
+    merge_tool = {
+      -- Config for conflicted files in diff views during a merge or rebase.
+      layout = "diff3_horizontal",
+      disable_diagnostics = true,   -- Temporarily disable diagnostics for conflict buffers while in the view.
+    },
+    file_history = {
+      -- Config for changed files in file history views.
+      layout = "diff2_horizontal",
+    },
   },
   file_panel = {
     listing_style = "tree",             -- One of 'list' or 'tree'
@@ -993,6 +1065,7 @@ require("diffview").setup({
     win_config = {                      -- See ':h diffview-config-win_config'
       position = "left",
       width = 35,
+      win_opts = {}
     },
   },
   file_history_panel = {
@@ -1007,10 +1080,13 @@ require("diffview").setup({
     win_config = {    -- See ':h diffview-config-win_config'
       position = "bottom",
       height = 16,
+      win_opts = {}
     },
   },
   commit_log_panel = {
-    win_config = {},  -- See ':h diffview-config-win_config'
+    win_config = {   -- See ':h diffview-config-win_config'
+      win_opts = {},
+    }
   },
   default_args = {    -- Default args prepended to the arg-list for the listed commands
     DiffviewOpen = {},
@@ -1022,13 +1098,34 @@ require("diffview").setup({
     view = {
       -- The `view` bindings are active in the diff buffers, only when the current
       -- tabpage is a Diffview.
-      ["<tab>"]      = actions.select_next_entry, -- Open the diff for the next file
-      ["<s-tab>"]    = actions.select_prev_entry, -- Open the diff for the previous file
-      ["gf"]         = actions.goto_file,         -- Open the file in a new split in the previous tabpage
-      ["<C-w><C-f>"] = actions.goto_file_split,   -- Open the file in a new split
-      ["<C-w>gf"]    = actions.goto_file_tab,     -- Open the file in a new tabpage
-      ["<leader>e"]  = actions.focus_files,       -- Bring focus to the files panel
-      ["<leader>b"]  = actions.toggle_files,      -- Toggle the files panel.
+      ["<tab>"]      = actions.select_next_entry,         -- Open the diff for the next file
+      ["<s-tab>"]    = actions.select_prev_entry,         -- Open the diff for the previous file
+      ["gf"]         = actions.goto_file,                 -- Open the file in a new split in the previous tabpage
+      ["<C-w><C-f>"] = actions.goto_file_split,           -- Open the file in a new split
+      ["<C-w>gf"]    = actions.goto_file_tab,             -- Open the file in a new tabpage
+      ["<leader>e"]  = actions.focus_files,               -- Bring focus to the file panel
+      ["<leader>b"]  = actions.toggle_files,              -- Toggle the file panel.
+      ["g<C-x>"]     = actions.cycle_layout,              -- Cycle through available layouts.
+      ["[x"]         = actions.prev_conflict,             -- In the merge_tool: jump to the previous conflict
+      ["]x"]         = actions.next_conflict,             -- In the merge_tool: jump to the next conflict
+      ["<leader>co"] = actions.conflict_choose("ours"),   -- Choose the OURS version of a conflict
+      ["<leader>ct"] = actions.conflict_choose("theirs"), -- Choose the THEIRS version of a conflict
+      ["<leader>cb"] = actions.conflict_choose("base"),   -- Choose the BASE version of a conflict
+      ["<leader>ca"] = actions.conflict_choose("all"),    -- Choose all the versions of a conflict
+      ["dx"]         = actions.conflict_choose("none"),   -- Delete the conflict region
+    },
+    diff1 = { --[[ Mappings in single window diff layouts ]] },
+    diff2 = { --[[ Mappings in 2-way diff layouts ]] },
+    diff3 = {
+      -- Mappings in 3-way diff layouts
+      { { "n", "x" }, "2do", actions.diffget("ours") },   -- Obtain the diff hunk from the OURS version of the file
+      { { "n", "x" }, "3do", actions.diffget("theirs") }, -- Obtain the diff hunk from the THEIRS version of the file
+    },
+    diff4 = {
+      -- Mappings in 4-way diff layouts
+      { { "n", "x" }, "1do", actions.diffget("base") },   -- Obtain the diff hunk from the BASE version of the file
+      { { "n", "x" }, "2do", actions.diffget("ours") },   -- Obtain the diff hunk from the OURS version of the file
+      { { "n", "x" }, "3do", actions.diffget("theirs") }, -- Obtain the diff hunk from the THEIRS version of the file
     },
     file_panel = {
       ["j"]             = actions.next_entry,         -- Bring the cursor to the next file entry
@@ -1042,7 +1139,6 @@ require("diffview").setup({
       ["S"]             = actions.stage_all,          -- Stage all entries.
       ["U"]             = actions.unstage_all,        -- Unstage all entries.
       ["X"]             = actions.restore_entry,      -- Restore entry to the state on the left side.
-      ["R"]             = actions.refresh_files,      -- Update stats and entries in the file list.
       ["L"]             = actions.open_commit_log,    -- Open the commit log panel.
       ["<c-b>"]         = actions.scroll_view(-0.25), -- Scroll the view up
       ["<c-f>"]         = actions.scroll_view(0.25),  -- Scroll the view down
@@ -1053,8 +1149,12 @@ require("diffview").setup({
       ["<C-w>gf"]       = actions.goto_file_tab,
       ["i"]             = actions.listing_style,        -- Toggle between 'list' and 'tree' views
       ["f"]             = actions.toggle_flatten_dirs,  -- Flatten empty subdirectories in tree listing style.
+      ["R"]             = actions.refresh_files,        -- Update stats and entries in the file list.
       ["<leader>e"]     = actions.focus_files,
       ["<leader>b"]     = actions.toggle_files,
+      ["g<C-x>"]        = actions.cycle_layout,
+      ["[x"]            = actions.prev_conflict,
+      ["]x"]            = actions.next_conflict,
     },
     file_history_panel = {
       ["g!"]            = actions.options,          -- Open the option panel
@@ -1079,6 +1179,7 @@ require("diffview").setup({
       ["<C-w>gf"]       = actions.goto_file_tab,
       ["<leader>e"]     = actions.focus_files,
       ["<leader>b"]     = actions.toggle_files,
+      ["g<C-x>"]        = actions.cycle_layout,
     },
     option_panel = {
       ["<tab>"] = actions.select_entry,
@@ -1086,6 +1187,7 @@ require("diffview").setup({
     },
   },
 })
+
 EOF
 
 
@@ -1117,7 +1219,7 @@ require('lualine').setup {
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_b = {'diff', 'diagnostics'},
     lualine_c = {
       {
       'filename',
@@ -1141,4 +1243,36 @@ require('lualine').setup {
 }
 END
 
-map <silent> <leader>w :lua require('nvim-window').pick()<CR>
+nnoremap <silent> <c-w> :lua require('nvim-window').pick()<CR>
+nnoremap <silent> <c-w>l <c-w>l
+nnoremap <silent> <c-w>h <c-w>h
+nnoremap <silent> <c-w>k <c-w>k
+nnoremap <silent> <c-w>j <c-w>j
+nnoremap <silent> <c-w>c <c-w>c
+nnoremap <silent> <c-w>o <c-w>o
+nnoremap <silent> <c-w>H <c-w>H
+nnoremap <silent> <c-w>L <c-w>L
+nnoremap <silent> <c-w>K <c-w>K
+nnoremap <silent> <c-w>J <c-w>J
+
+lua <<END
+require("stabilize").setup()
+END
+
+nnoremap <leader>dd :lua require("duck").hatch("🦆")<CR>
+nnoremap <leader>dk :lua require("duck").cook("🦆")<CR>
+
+nnoremap <leader>fw <cmd>lua require('telescope.builtin').grep_string({search = vim.fn.expand("<cword>")})<cr>
+
+lua << END
+vim.api.nvim_set_keymap("", "<leader>y", '"+y', { silent = true })
+END
+
+nnoremap <leader>do :DiffviewOpen 
+nnoremap <leader>dc :DiffviewClose<CR>
+
+lua << EOF
+require('Comment').setup()
+EOF
+
+set fillchars+=diff:╱
